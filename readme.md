@@ -10,7 +10,7 @@ token = APP_TOKEN
 ```
 
 tsconfig.json file:
-```
+```json
 {
     "compilerOptions": {
        "target": "es2016",
@@ -34,7 +34,14 @@ import gogecord from 'gogecord';
 dotenv.config();
 
 const client = new gogecord.Client({
-    intents: ['DirectMessages', 'GuildMembers', 'GuildMessages', 'GuildPresences', 'Guilds', 'MessageContent'],
+    intents: [
+        'DirectMessages',
+        'GuildMembers',
+        'GuildMessages',
+        'GuildPresences',
+        'Guilds',
+        'MessageContent'
+    ],
     token: process.env.token
 });
 
