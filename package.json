@@ -1,6 +1,6 @@
 {
   "name": "gogecord",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A Discord API interaction library, coded in TypeScript and compiled in JavaScript.",
   "main": "sources/index",
   "types": "declarations/index.d.ts",
