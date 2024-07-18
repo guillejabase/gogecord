@@ -2,7 +2,7 @@
 A Discord API interaction library, coded in TypeScript and compiled in JavaScript.
 
 ## Installation
-Execute `npm install gogecord .env ts-node` in Command Prompt. 
+Execute `npm install gogecord dotenv ts-node` in Command Prompt. 
 
 .env file:
 ```
