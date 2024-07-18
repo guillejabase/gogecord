@@ -20,8 +20,8 @@ tsconfig.json file:
        "forceConsistentCasingInFileNames": true,
        "strict": true,
        "skipLibCheck": true
-    }
-    "exclude": ["node_modules"]
+    },
+    "exclude": ["node_modules"],
     "include": ["sources"]
 }
 ```
@@ -42,7 +42,7 @@ const client = new gogecord.Client({
         'Guilds',
         'MessageContent'
     ],
-    token: process.env.token
+    token: process.env.token!
 });
 
 client.on('Ready', (client) => {
