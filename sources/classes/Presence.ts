@@ -1,4 +1,7 @@
-import types from 'discord-api-types/v10';
+import {
+    GatewayActivity,
+    GatewayPresenceUpdateDispatchData
+} from 'discord-api-types/v10';
 
 export const ActivityTypes = {
     Playing: 0,
@@ -9,23 +12,21 @@ export const ActivityTypes = {
     Competing: 5
 };
 
-type ActivityType = keyof typeof ActivityTypes;
+export type ActivityType = keyof typeof ActivityTypes;
 
 class Activity {
-    created: {
+    public created: {
         at: Date;
         timestamp: number;
     };
-    id: string;
-    name: string;
-    type: ActivityType;
+    public name: string;
+    public type: ActivityType;
 
-    constructor (data: types.GatewayActivity) {
+    constructor (data: GatewayActivity) {
         this.created = {
             at: new Date(data.created_at),
             timestamp: data.created_at
         };
-        this.id = data.id;
         this.name = data.name;
         this.type = Object.keys(ActivityTypes).find((key) => ActivityTypes[key as ActivityType] == data.type) as ActivityType;
     }
@@ -38,22 +39,22 @@ export const Statuses = {
     Online: 'online'
 };
 
-type Status = keyof typeof Statuses;
+export type Status = keyof typeof Statuses;
 
 export default class Presence {
-    activities: Activity[];
-    custom: {
+    public activities: Activity[];
+    public custom: {
         text?: string;
         emoji?: string;
     };
-    client: {
+    public client: {
         desktop: Status;
         mobile: Status;
         web: Status;
     };
-    status: Status;
+    public status: Status;
 
-    constructor (data?: types.GatewayPresenceUpdateDispatchData) {
+    constructor (data?: GatewayPresenceUpdateDispatchData) {
         this.activities = data?.activities
             ?.filter((activity) => activity.type != ActivityTypes.Custom)
             .map((activity) => new Activity(activity)) || [];

@@ -4,7 +4,7 @@ export type Permission = keyof typeof Permissions.bits;
 export type PermissionsResolvable = keyof typeof Permissions.bits | number | bigint | PermissionsResolvable[];
 
 export default class Permissions extends BitField {
-    static bits = {
+    public static bits = {
         CreateInstantInvite: 1,
         KickMembers: 2,
         BanMembers: 4,
@@ -55,7 +55,7 @@ export default class Permissions extends BitField {
         SendPolls: 562949953421312,
         UseExternalApps: 1125899906842624
     };
-    static all = this.resolve(Object.values(this.bits));
+    public static all = this.resolve(Object.values(this.bits));
 
     constructor (...bits: PermissionsResolvable[]) {
         super(...bits as BitFieldResolvable[]);
@@ -65,7 +65,7 @@ export default class Permissions extends BitField {
         }
     }
 
-    has(bit: PermissionsResolvable) {
+    public has(bit: PermissionsResolvable): boolean {
         return super.has(bit);
     }
 }

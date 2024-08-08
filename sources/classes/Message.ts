@@ -1,33 +1,35 @@
-import types from 'discord-api-types/v10';
-import Client from './Client';
+import {
+    APIMessage,
+    GatewayMessageCreateDispatchData,
+    GatewayMessageUpdateDispatchData
+} from 'discord-api-types/v10';
+
+import Channel from './Channel';
 import Guild from './Guild';
-import Snowflake from '../util/Snowflake';
+
 import Embed from '../util/Embed';
+import Snowflake from '../util/Snowflake';
+import Member from './Member';
 
 export default class Message {
-    private client: Client;
-    private channelId: string;
-    private memberId: string;
-
-    content: string;
-    created: {
+    public channel: Channel;
+    public content: string;
+    public created: {
         at: Date;
         timestamp: number;
     };
-    guild!: Guild;
-    id: string;
+    public edited: {
+        since?: Date;
+        timestamp?: number;
+    };
+    public guild!: Guild;
+    public id: string;
+    public member: Member;
 
-    constructor (
-        client: Client,
-        data: types.GatewayMessageCreateDispatchData | types.GatewayMessageUpdateDispatchData
-    ) {
-        this.channelId = data.channel_id;
-        this.client = client;
+    constructor (data: APIMessage | GatewayMessageCreateDispatchData | GatewayMessageUpdateDispatchData, guild: Guild) {
+        this.guild = guild;
+        this.channel = this.guild.channels.cache.get(data.channel_id)!;
         this.content = data.content!;
-
-        if ('guild_id' in data) {
-            this.guild = this.client.guilds.get(data.guild_id!)!;
-        }
         this.id = data.id;
 
         const created = new Snowflake(this.id).timestamp;
@@ -37,25 +39,27 @@ export default class Message {
             timestamp: created
         };
 
-        this.memberId = data.author!.id;
+        const edited = Date.parse(data.edited_timestamp!);
 
-        Object.defineProperties(this, {
-            client: { enumerable: false },
-            channelId: { enumerable: false },
-            guild: { enumerable: false },
-            memberId: { enumerable: false }
+        this.edited = {
+            since: data.edited_timestamp ? new Date(edited) : undefined,
+            timestamp: edited || undefined
+        };
+        this.member = this.guild.members.cache.get(data.author!.id)!;
+    }
+
+    public get ping() {
+        return Date.now() - this.created.timestamp;
+    }
+
+    public async reply(options: {
+        content?: string;
+        embeds?: Embed[];
+    }): Promise<Message> {
+        return await this.guild.channels.send(this.channel, {
+            content: options.content,
+            embeds: options.embeds,
+            reference: this.id
         });
-    }
-
-    get channel() {
-        return this.guild.channels.get(this.channelId)!;
-    }
-
-    get member() {
-        return this.guild.members.get(this.memberId)!;
-    }
-
-    reply(content: string | Embed) {
-        return this.channel.send(content, this.id);
-    }
+    };
 }

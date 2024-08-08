@@ -3,7 +3,7 @@ import BitField, { BitFieldResolvable } from './BitField';
 export type IntentsResolvable = keyof typeof Intents.bits | number | bigint | IntentsResolvable[];
 
 export default class Intents extends BitField {
-    static bits = {
+    public static bits = {
         Guilds: 1,
         GuildMembers: 2,
         GuildBans: 4,
@@ -31,7 +31,7 @@ export default class Intents extends BitField {
         super(...bits as BitFieldResolvable[]);
     }
 
-    has(bit: IntentsResolvable) {
+    public has(bit: IntentsResolvable): boolean {
         return super.has(bit);
     }
 }

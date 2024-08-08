@@ -1,13 +1,11 @@
-export default class Collection<K, V> extends Map<K, V> {
-    find(statement: (item: V) => boolean) {
+export default class Collection<key, value> extends Map<key, value> {
+    public find(statement: (item: value) => boolean): value | undefined {
         return [...this.values()].find(statement);
     }
-
-    map<T>(map: (item: V) => T) {
+    public map<type>(map: (item: value) => type): type[] {
         return [...this.values()].map(map);
     }
-
-    some(statement: (item: V) => boolean): boolean {
+    public some(statement: (item: value) => boolean): boolean {
         return !!this.find(statement);
     }
 }

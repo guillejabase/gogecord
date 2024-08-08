@@ -2,18 +2,18 @@
 A Discord API interaction library, coded in TypeScript and compiled in JavaScript.
 
 ## Installation
-Execute `npm install gogecord dotenv ts-node` in Command Prompt. 
+Execute `npm install dotenv fs gogecord ts-node` in Command Prompt. 
 
 .env file:
 ```
-token = APP_TOKEN
+token=APP_TOKEN
 ```
 
 tsconfig.json file:
 ```json
 {
     "compilerOptions": {
-       "target": "es2016",
+       "target": "esnext",
        "module": "commonjs",
        "resolveJsonModule": true,
        "esModuleInterop": true,
@@ -26,32 +26,64 @@ tsconfig.json file:
 }
 ```
 
-sources/index.ts file:
+sources/events:
 ```ts
+// ready.ts
+
+import { Event } from 'gogecord';
+
+export default new Event({
+    name: 'Ready',
+
+    run(client) {
+        console.log('Bot ready!');
+    }
+});
+```
+```ts
+// messageCreate.ts
+
+import { Event } from 'gogecord';
+
+export default new Event({
+    name: 'MessageCreate',
+
+    run(client, message) {
+        if (message.content == 'hi') {
+            message.reply({ content: 'Hi!' });
+        }
+    }
+});
+```
+
+sources:
+```ts
+// index.ts
+
 import dotenv from 'dotenv';
-import gogecord from 'gogecord';
+import fs from 'fs';
 
-dotenv.config();
+import { Client, Collection, Event, Events } from 'gogecord';
 
-const client = new gogecord.Client({
+const events = new Collection<keyof Events, Event>();
+
+for (const file of fs.readdirSync('./sources/events')) {
+    const event: Event = require(`./events/${file}`).default;
+
+    events.set(event.name, event);
+}
+
+new Client({
     intents: [
-        'DirectMessages',
+        'GuildBans',
         'GuildMembers',
         'GuildMessages',
         'GuildPresences',
         'Guilds',
         'MessageContent'
     ],
-    token: process.env.token!
-});
-
-client.on('Ready', (client) => {
-    console.log('Bot ready. Username ->', client.user.username);
-});
-client.on('MessageCreate', (client, message) => {
-    if (message.content == 'hello, bot!') {
-        message.reply('hello!');
-    }
+    token: process.env.token!,
+    events: events
 });
 ```
 

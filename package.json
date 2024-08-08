@@ -1,31 +1,37 @@
 {
   "name": "gogecord",
-  "version": "1.0.2",
-  "description": "A Discord API interaction library, coded in TypeScript and compiled in JavaScript.",
-  "main": "sources/index",
-  "types": "declarations/index.d.ts",
+  "version": "1.0.3",
+  "description": "A Discord API interaction library, coded in TypeScript.",
+  "main": "./sources/index",
+  "types": "./typings/index.d.ts",
   "scripts": {
     "build": "tsc"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/guillejabase/gogecord.git"
+    "url": "git+https://github.com/guillejabase/gogecord.git",
+    "directory": "packages/gogecord"
   },
   "keywords": [
     "typescript",
     "discord",
-    "api"
+    "api",
+    "bot",
+    "client",
+    "node"
   ],
   "author": "guillejabase",
   "license": "ISC",
   "dependencies": {
     "@types/node": "^20.14.10",
     "@types/ws": "^8.5.11",
-    "axios": "^1.7.2",
     "discord-api-types": "^0.37.92",
     "ws": "^8.18.0"
   },
   "devDependencies": {
     "typescript": "^5.5.3"
+  },
+  "engines": {
+    "node": ">=22.1.0"
   }
 }

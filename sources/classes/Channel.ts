@@ -1,10 +1,12 @@
-import types from 'discord-api-types/v10';
-import Client from './Client';
-import Collection from '../util/Collection';
-import Message from './Message';
+import { APIChannel } from 'discord-api-types/v10';
+
 import Guild from './Guild';
-import Snowflake from '../util/Snowflake';
+import Message from './Message';
+
+import MessageManager from '../managers/MessageManager';
+
 import Embed from '../util/Embed';
+import Snowflake from '../util/Snowflake';
 
 export const ChannelTypes = {
     Text: 0,
@@ -22,25 +24,20 @@ export const ChannelTypes = {
     Media: 16
 };
 
-type ChannelType = keyof typeof ChannelTypes;
+export type ChannelType = keyof typeof ChannelTypes;
 
 export default class Channel {
-    private client: Client;
-    private guildId: string;
-
-    created: {
+    public created: {
         at: Date;
         timestamp: number;
     };
-    id: string;
-    mention: string;
-    name?: string;
-    type: ChannelType;
-    messages = new Collection<string, Message>();
+    public guild: Guild;
+    public id: string;
+    public messages!: MessageManager;
+    public name: string;
+    public type: ChannelType;
 
-    constructor (client: Client, data: types.APIChannel, guild: Guild) {
-        this.client = client;
-        this.guildId = guild.id;
+    constructor (data: APIChannel, guild: Guild) {
         this.id = data.id;
 
         const created = new Snowflake(this.id).timestamp;
@@ -49,30 +46,16 @@ export default class Channel {
             at: new Date(created),
             timestamp: created
         };
-        this.mention = `<#${this.id}>`;
-        this.name = data.name || undefined;
+        this.guild = guild;
+        this.name = data.name!;
         this.type = Object.keys(ChannelTypes).find((key) => ChannelTypes[key as ChannelType] == data.type) as ChannelType;
-
-        Object.defineProperties(this, {
-            client: { enumerable: false },
-            guildId: { enumerable: false },
-            messages: { enumerable: false }
-        });
     }
 
-    get guild() {
-        return this.client.guilds.get(this.guildId)!;
-    }
-
-    send(content: string | Embed, reference?: string) {
-        return new Promise((resolve: (value: Message) => void) => {
-            this.client.api.post(`/channels/${this.id}/messages`, {
-                content: typeof content! == 'string' ? content : undefined,
-                embeds: typeof content! == 'object' ? [content] : undefined,
-                message_reference: reference ? { message_id: reference } : undefined
-            }).then((response) => {
-                resolve(new Message(this.client, response.data));
-            });
-        });
-    }
+    public async send(options: {
+        content?: string;
+        embeds?: Embed[];
+        reference?: string;
+    }): Promise<Message> {
+        return await this.guild.channels.send(this, options);
+    };
 }

@@ -1,49 +1,51 @@
-import types from 'discord-api-types/v10';
+import {
+    APIGuildMember,
+    GatewayGuildMemberAddDispatchData,
+    GatewayGuildMemberUpdateDispatchData
+} from 'discord-api-types/v10';
+
 import Client from './Client';
-import MemberFlags, { MemberFlag } from '../util/MemberFlags';
 import Guild from './Guild';
-import Permissions, { Permission } from '../util/Permissions';
 import Presence from './Presence';
 import User from './User';
-import Collection from '../util/Collection';
-import Role from './Role';
+
+import Permissions, { Permission } from '../util/Permissions';
+import MemberRoleManager from '../managers/MemberRoleManager';
 
 export default class Member {
-    private client: Client;
-    private guildId!: string;
-
-    avatar?: string;
-    boosting?: {
-        since: Date;
-        timestamp: number;
+    public avatar?: string;
+    public boosting: {
+        since?: Date;
+        timestamp?: number;
     };
-    deaf: boolean;
-    flags: MemberFlag[];
-    joined: {
+    public deaf: boolean;
+    public guild: Guild;
+    public joined: {
         at: Date;
         timestamp: number;
     };
-    mute: boolean;
-    nickname?: string;
-    presence: Presence;
-    user: User;
-    roles = new Collection<string, Role>();
+    public muted: boolean;
+    public nickname?: string;
+    public permissions: Permission[];
+    public presence: Presence;
+    public roles: MemberRoleManager;
+    public timedOut: {
+        until?: Date;
+        timestamp?: number;
+    };
+    public user: User;
 
-    constructor (
-        client: Client,
-        data: types.APIGuildMember | types.GatewayGuildMemberAddDispatchData | types.GatewayGuildMemberUpdateDispatchData,
-        guild: Guild,
-        presence: Presence
-    ) {
+    constructor (client: Client, data: APIGuildMember | GatewayGuildMemberAddDispatchData | GatewayGuildMemberUpdateDispatchData, guild: Guild, presence: Presence) {
         this.avatar = data.avatar || undefined;
-        this.boosting = data.premium_since ? {
-            since: new Date(Date.parse(data.premium_since)),
-            timestamp: Date.parse(data.premium_since)
-        } : undefined;
-        this.client = client;
+
+        const boosting = Date.parse(data.premium_since!);
+
+        this.boosting = {
+            since: data.premium_since ? new Date(boosting) : undefined,
+            timestamp: boosting || undefined
+        };
         this.deaf = !!data.deaf;
-        this.flags = new MemberFlags(data.flags).toArray() as MemberFlag[];
-        this.guildId = guild.id;
+        this.guild = guild;
 
         const joined = Date.parse(data.joined_at!);
 
@@ -51,34 +53,46 @@ export default class Member {
             at: new Date(joined),
             timestamp: joined
         };
-        this.mute = !!data.mute;
+        this.muted = !!data.mute;
         this.nickname = data.nick || undefined;
-        this.presence = presence;
-
-        guild.roles.forEach((role) => data.roles.includes(role.id) && this.roles.set(role.id, role));
-
         this.user = new User(data.user);
+        this.roles = new MemberRoleManager(client, this);
 
-        client.users.set(this.user.id, this.user);
-
-        Object.defineProperties(this, {
-            client: { enumerable: false },
-            guildId: { enumerable: false },
-            roles: { enumerable: false }
+        this.guild.roles.cache.forEach((role) => {
+            if (data.roles.includes(role.id)) {
+                this.roles.cache.set(role.id, role);
+            };
         });
-    }
 
-    get guild() {
-        return this.client.guilds.get(this.guildId)!;
-    }
-
-    get permissions() {
         let bitField = BigInt(0);
 
-        this.roles.forEach((role) => {
+        this.roles.cache.forEach((role) => {
             bitField |= BigInt(role.permissions.reduce((previous, current) => previous | Permissions.bits[current], 0));
         });
 
-        return new Permissions(bitField).toArray() as Permission[];
+        this.permissions = new Permissions(bitField).toArray() as Permission[];
+        this.presence = presence;
+
+        const parsed = Date.parse(data.communication_disabled_until!);
+        const timeout = parsed > Date.now() ? parsed : undefined;
+
+        this.timedOut = {
+            until: timeout ? new Date(timeout) : undefined,
+            timestamp: timeout
+        };
+
+        if (timeout) {
+            setTimeout(() => {
+                this.timedOut = {
+                    until: undefined,
+                    timestamp: undefined
+                };
+            }, timeout - Date.now());
+        }
+
+        Object.defineProperties(this, {
+            permissions: { enumerable: false },
+            roles: { enumerable: false }
+        });
     }
 }

@@ -26,7 +26,7 @@ export default class UserFlags extends BitField {
         super(...bits as BitFieldResolvable[]);
     }
 
-    public has(bit: UserFlagsResolvable) {
+    public has(bit: UserFlagsResolvable): boolean {
         return super.has(bit);
     }
 }

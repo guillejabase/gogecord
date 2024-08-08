@@ -1,8 +1,8 @@
 export default class Snowflake {
-    static epoch = BigInt(1420070400000);
+    public static epoch = BigInt(1420070400000);
 
-    snowflake: string;
-    timestamp: number;
+    public snowflake: string;
+    public timestamp: number;
 
     constructor (snowflake: string) {
         this.snowflake = snowflake;

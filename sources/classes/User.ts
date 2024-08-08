@@ -1,33 +1,32 @@
-import types from 'discord-api-types/v10';
+import { APIUser } from 'discord-api-types/v10';
+
 import Snowflake from '../util/Snowflake';
 import UserFlags, { UserFlag } from '../util/UserFlags';
 
 export default class User {
-    avatar?: string;
-    banner: {
-        hash?: string,
+    public avatar?: string;
+    public banner: {
         color?: number;
+        hash?: string;
     };
-    bot: boolean;
-    created: {
+    public bot: boolean;
+    public created: {
         at: Date;
         timestamp: number;
     };
-    discriminator?: string;
-    flags: UserFlag[];
-    globalName?: string;
-    id: string;
-    mention: string;
-    username: string;
+    public discriminator?: string;
+    public flags: UserFlag[];
+    public globalName?: string;
+    public id: string;
+    public username: string;
 
-    constructor (data: types.APIUser) {
+    constructor (data: APIUser) {
         this.avatar = data.avatar || undefined;
         this.banner = {
-            hash: data.banner || undefined,
-            color: data.accent_color || undefined
+            color: data.accent_color || undefined,
+            hash: data.banner || undefined
         };
         this.bot = !!data.bot;
-        this.discriminator = (data.discriminator != '0') ? data.discriminator : undefined;
         this.id = data.id;
 
         const created = new Snowflake(this.id).timestamp;
@@ -36,9 +35,9 @@ export default class User {
             at: new Date(created),
             timestamp: created
         };
+        this.discriminator = data.discriminator != '0' ? data.discriminator : undefined;
         this.flags = new UserFlags(data.public_flags!).toArray() as UserFlag[];
         this.globalName = data.global_name || undefined;
-        this.mention = `<@${this.id}>`;
         this.username = data.username;
     }
 }

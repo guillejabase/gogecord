@@ -1,30 +1,30 @@
-import types from 'discord-api-types/v10';
-import Client from './Client';
+import { APIRole } from 'discord-api-types/v10';
+
 import Guild from './Guild';
+import Member from './Member';
+
+import Collection from '../util/Collection';
 import Permissions, { Permission } from '../util/Permissions';
 import Snowflake from '../util/Snowflake';
 
 export default class Role {
-    private client: Client;
-    private guildId: string;
-    private permissionsBitField: bigint;
-
-    created: {
+    public color: number;
+    public created: {
         at: Date;
         timestamp: number;
     };
-    color: number;
-    id!: string;
-    mention: string;
-    name: string;
-    position: number;
+    public hoist: boolean;
+    public guild: Guild;
+    public id: string;
+    public mentionable: boolean;
+    public name: string;
+    public permissions: Permission[];
+    public position: number;
 
-    constructor (
-        client: Client,
-        data: types.APIRole | types.GatewayGuildRoleModifyDispatchData['role'],
-        guild: Guild
-    ) {
-        this.client = client;
+    public members = new Collection<string, Member>();
+
+    constructor (data: APIRole, guild: Guild) {
+        this.color = data.color;
         this.id = data.id;
 
         const created = new Snowflake(this.id).timestamp;
@@ -33,25 +33,13 @@ export default class Role {
             at: new Date(created),
             timestamp: created
         };
-        this.color = data.color;
-        this.guildId = guild.id;
-        this.mention = `<@&${this.id}>`;
+        this.hoist = data.hoist;
+        this.guild = guild;
+        this.mentionable = data.mentionable;
         this.name = data.name;
-        this.permissionsBitField = BigInt(data.permissions);
+        this.permissions = new Permissions(BigInt(data.permissions)).toArray() as Permission[];
         this.position = data.position;
 
-        Object.defineProperties(this, {
-            client: { enumerable: false },
-            guildId: { enumerable: false },
-            permissionsBitField: { enumerable: false }
-        });
-    }
-
-    get guild() {
-        return this.client.guilds.get(this.guildId);
-    }
-
-    get permissions() {
-        return new Permissions(this.permissionsBitField).toArray() as Permission[];
+        Object.defineProperty(this, 'members', { enumerable: false });
     }
 }

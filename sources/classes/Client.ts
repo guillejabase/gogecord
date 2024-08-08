@@ -1,55 +1,60 @@
+import https from 'https';
 import EventEmitter from 'events';
-import axios, { AxiosInstance } from 'axios';
 import WebSocket from 'ws';
-import Embed from '../util/Embed';
-import Intents, { IntentsResolvable } from '../util/Intents';
-import User from './User';
-import Collection from '../util/Collection';
-import Guild from './Guild';
-import Event, { ClientEvents, EventsIntents, EventsName, GatewayEvents } from './Event';
 
-type Presence = {
-    activities: {
-        name: string;
-        type: 'Playing' | 'Listening' | 'Watching' | 'Custom';
-    }[];
-    status: 'Online' | 'DoNotDisturb' | 'Idle' | 'Offline';
+import Event, { Events } from './Event';
+import Guild from './Guild';
+import Listener, { ListenersNames } from './Listener';
+import User from './User';
+
+import UserManager from '../managers/UserManager';
+
+import Collection from '../util/Collection';
+import Intents, { IntentsResolvable } from '../util/Intents';
+
+type RequestMethod = 'delete' | 'get' | 'patch' | 'post' | 'put';
+type RequestOptions = {
+    method: RequestMethod;
+    path: string;
+    body?: any;
+    reason?: string;
+    resolve: (value: any) => void;
+    reject: (reason?: any) => void;
 };
 
 export default class Client extends EventEmitter {
-    api: AxiosInstance;
-    embed!: Embed;
-    intents: Intents;
-    owner!: User;
-    presence: Presence;
-    token: string;
-    user!: User;
-    webSocket!: WebSocket;
-    guilds = new Collection<string, Guild>();
-    users = new Collection<string, User>();
+    private intents: Intents;
+    private token: string;
+    private webSocket!: WebSocket;
+
+    private queue: RequestOptions[] = [];
+    private reset: number = 0;
+    private processing: boolean = false;
+
+    public events: Collection<keyof Events, Event>;
+    public owner!: User;
+    public ready!: {
+        at: Date;
+        timestamp: number;
+    };
+    public user!: User;
+
+    public guilds = new Collection<string, Guild>();
+    public users = new UserManager(this);
 
     constructor (options: {
         intents: IntentsResolvable;
         token: string;
-        presence?: Partial<Presence>;
+        events: Client['events'];
     }) {
         super();
 
+        this.events = options.events;
         this.intents = new Intents(options.intents);
-        this.presence = {
-            activities: options.presence?.activities || [],
-            status: options.presence?.status || 'Online'
-        };
         this.token = options.token;
-        this.api = axios.create({
-            baseURL: 'https://discord.com/api/v10',
-            headers: {
-                Authorization: `Bot ${this.token}`
-            }
-        });
 
-        this.api.get('/gateway/bot').then((response) => {
-            this.webSocket = new WebSocket(`${response.data.url}/?v=10&encoding=json`)!;
+        this.request('get', '/gateway/bot').then((response) => {
+            this.webSocket = new WebSocket(`${response.url}/?v=10&encoding=json`);
 
             this.webSocket.on('open', () => {
                 this.webSocket.send(JSON.stringify({
@@ -69,51 +74,165 @@ export default class Client extends EventEmitter {
                 const data: {
                     op: number,
                     d: any,
-                    t: keyof typeof EventsName;
+                    t: keyof typeof ListenersNames;
                 } = JSON.parse(buffer.toString());
 
                 if (data.op == 10) {
                     setInterval(() => {
-                        this.webSocket.send(JSON.stringify({
+                        return this.webSocket.send(JSON.stringify({
                             op: 1,
                             d: null
                         }));
                     }, data.d.heartbeat_interval);
                 }
+                if (!data.t) {
+                    return;
+                }
 
-                import(`../events/${EventsName[data.t]}`)
-                    .then((module) => module.default)
-                    .then((event: Event<keyof GatewayEvents>) => event.run(this, data.d))
-                    .catch(() => { });
+                const name = ListenersNames[data.t];
+
+                import(`../listeners/${name}`).then((file) => {
+                    return file.default;
+                }).then((listener: Listener) => {
+                    return listener.run(this, data.d);
+                }).catch(() => { });
+
+                const event = this.events.get(name as keyof Events);
+
+                if (!event || this.listeners(event.name).length) {
+                    return;
+                }
+
+                this.on(event.name, (client, ...args) => {
+                    return event.run(client, ...args);
+                });
             });
-            this.webSocket.on('error', (error) => {
-                throw console.error('An error ocurred:', error);
-            });
+        });
+        this.request('get', '/oauth2/applications/@me').then((response) => {
+            this.owner = new User(response.owner);
+        });
+
+        Object.defineProperties(this, {
+            _events: { enumerable: false },
+            _eventsCount: { enumerable: false },
+            _maxListeners: { enumerable: false },
+            events: { enumerable: false },
+            guilds: { enumerable: false },
+            intents: { enumerable: false },
+            processing: { enumerable: false },
+            queue: { enumerable: false },
+            reset: { enumerable: false },
+            token: { enumerable: false },
+            unavailableGuilds: { enumerable: false },
+            users: { enumerable: false },
+            webSocket: { enumerable: false }
         });
     }
 
-    get ping() {
-        return new Promise((resolve: (value: number) => void) => {
-            this.webSocket.ping(Date.now());
-            this.webSocket.once('pong', (data) => resolve(Date.now() - Number(data)));
-        });
-    }
-
-    emit<key extends keyof ClientEvents>(name: key, ...args: ClientEvents[key]) {
-        return super.emit(name, ...args);
-    }
-
-    off<key extends keyof ClientEvents>(name: key, listener: (...args: ClientEvents[key]) => void) {
-        return super.off(name, listener);
-    }
-
-    on<key extends keyof ClientEvents>(name: key, listener: (...args: ClientEvents[key]) => void) {
-        const intents = EventsIntents[name];
-
-        if (intents.length && !intents?.some((intent) => this.intents.has(intent))) {
-            console.warn(`Warning: "${name}" event requires "${intents.join('" & "')}" intent${intents.length > 1 ? 's' : ''}.`);
+    private async process(): Promise<void> {
+        if (this.processing) {
+            return;
         }
 
+        this.processing = true;
+
+        const processQueue = async () => {
+            while (this.queue.length > 0) {
+                if (Date.now() < this.reset) {
+                    await new Promise((resolve) => {
+                        return setTimeout(resolve, this.reset - Date.now());
+                    });
+                }
+
+                const requestOptions = this.queue.shift();
+
+                if (!requestOptions) {
+                    continue;
+                }
+
+                const { method, path, body, reason, resolve, reject } = requestOptions;
+
+                const headers: Record<string, string> = {
+                    Authorization: `Bot ${this.token}`,
+                    'Content-Type': 'application/json'
+                };
+
+                if (reason) {
+                    headers['X-Audit-Log-Reason'] = reason;
+                }
+
+                const request = https.request(`https://discord.com/api/v10${path}`, {
+                    method,
+                    headers
+                }, (response) => {
+                    let data = '';
+
+                    response.on('data', (chunk) => {
+                        data += chunk;
+                    });
+                    response.on('end', () => {
+                        const parsed = JSON.parse(data);
+
+                        if (response.statusCode && response.statusCode >= 200 && response.statusCode < 300) {
+                            resolve(parsed);
+                        } else if (response.statusCode && response.statusCode == 429) {
+                            const retry = Number(response.headers['retry-after']) * 1000;
+
+                            this.reset = Date.now() + retry;
+
+                            this.queue.unshift(requestOptions);
+                        } else {
+                            reject(parsed);
+                        }
+
+                        setImmediate(processQueue);
+                    });
+                });
+
+                if (body) {
+                    request.write(JSON.stringify(body));
+                }
+
+                request.end();
+                break;
+            }
+
+            if (this.queue.length > 0) {
+                setImmediate(processQueue);
+            } else {
+                this.processing = false;
+            }
+        };
+
+        setImmediate(processQueue);
+    }
+
+    public get ping(): Promise<number> {
+        return new Promise((resolve: (value: number) => void) => {
+            this.webSocket.ping(Date.now());
+            this.webSocket.on('pong', (ms) => resolve(Date.now() - Number(ms)));
+        });
+    }
+
+    public emit<key extends keyof Events>(name: key, client: this, ...args: Events[key]): boolean {
+        return super.emit(name, client, ...args);
+    }
+    public listeners<key extends keyof Events>(name: key): Function[] {
+        return super.listeners(name);
+    }
+    public on<key extends keyof Events>(name: key, listener: (client: this, ...args: Events[key]) => void): this {
         return super.on(name, listener);
+    }
+    public randomNumber(minimum: number, maximum: number, decimal?: boolean) {
+        return decimal ? Math.random() * (maximum - minimum) + minimum : Math.floor(Math.random() * (maximum - minimum)) + minimum;
+    }
+    public request(method: RequestMethod, path: string, body?: any, reason?: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.queue.push({ method, path, body, reason, resolve, reject });
+            this.process();
+        });
+    }
+    public toCase(text: string) {
+        return `${text[0].toUpperCase()}${text.slice(1).toLowerCase()}`;
     }
 }

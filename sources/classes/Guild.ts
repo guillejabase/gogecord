@@ -1,11 +1,21 @@
-import types from 'discord-api-types/v10';
-import Collection from '../util/Collection';
+import {
+    GatewayGuildCreateDispatchData,
+    GatewayGuildUpdateDispatchData
+} from 'discord-api-types/v10';
+
 import Channel from './Channel';
-import Member from './Member';
-import Role from './Role';
 import Client from './Client';
-import Snowflake from '../util/Snowflake';
+import Member from './Member';
 import Presence from './Presence';
+import Role from './Role';
+
+import BanManager from '../managers/BanManager';
+import ChannelManager from '../managers/ChannelManager';
+import MemberManager from '../managers/MemberManager';
+import MessageManager from '../managers/MessageManager';
+import RoleManager from '../managers/RoleManager';
+
+import Snowflake from '../util/Snowflake';
 
 const Features = {
     AnimatedBanner: 'ANIMATED_BANNER',
@@ -60,41 +70,38 @@ const PremiumTiers = {
     Tier3: 3
 };
 
-type Feature = keyof typeof Features;
-type MFALevel = keyof typeof MFALevels;
-type NSFWLevel = keyof typeof NSFWLevels;
-type PremiumTier = keyof typeof PremiumTiers;
+export type Feature = keyof typeof Features;
+export type MFALevel = keyof typeof MFALevels;
+export type NSFWLevel = keyof typeof NSFWLevels;
+export type PremiumTier = keyof typeof PremiumTiers;
 
 export default class Guild {
-    private ownerId: string;
-
-    banner?: string;
-    created: {
+    public banner?: string;
+    public bans: BanManager;
+    public channels!: ChannelManager;
+    public created: {
         at: Date;
         timestamp: number;
     };
-    description?: string;
-    features: Feature[];
-    id: string;
-    mfaLevel: MFALevel;
-    name: string;
-    nsfwLevel: NSFWLevel;
-    icon?: string;
-    premium: {
+    public description?: string;
+    public features: Feature[];
+    public icon?: string;
+    public id: string;
+    public me!: Member;
+    public members!: MemberManager;
+    public mfaLevel: MFALevel;
+    public name: string;
+    public nsfwLevel: NSFWLevel;
+    public owner!: Member;
+    public premium: {
         subscriptions: number;
         tier: PremiumTier;
     };
-    channels = new Collection<string, Channel>();
-    members = new Collection<string, Member>();
-    roles = new Collection<string, Role>();
+    public roles!: RoleManager;
 
-    constructor (
-        client: Client,
-        data: types.GatewayGuildCreateDispatchData | types.APIGuild
-    ) {
+    constructor (client: Client, data: GatewayGuildCreateDispatchData | GatewayGuildUpdateDispatchData) {
         this.banner = data.banner || undefined;
-        this.description = data.description || undefined;
-        this.features = data.features.map((feature) => Object.keys(Features).find((key) => Features[key as Feature] == feature) as Feature);
+        this.bans = new BanManager(client, this);
         this.id = data.id;
 
         const created = new Snowflake(this.id).timestamp;
@@ -103,51 +110,71 @@ export default class Guild {
             at: new Date(created),
             timestamp: created
         };
+        this.description = data.description || undefined;
+        this.features = data.features.map((feature) => Object.keys(Features).find((key) => Features[key as Feature] == feature) as Feature);
+        this.icon = data.icon || undefined;
         this.mfaLevel = Object.keys(MFALevels).find((key) => MFALevels[key as MFALevel] == data.mfa_level) as MFALevel;
         this.name = data.name;
         this.nsfwLevel = Object.keys(NSFWLevels).find((key) => NSFWLevels[key as NSFWLevel] == data.nsfw_level) as NSFWLevel;
-        this.icon = data.icon || undefined;
-        this.ownerId = data.owner_id;
         this.premium = {
-            subscriptions: data.premium_subscription_count!,
-            tier: Object.keys(PremiumTiers).find((tier) => PremiumTiers[tier as PremiumTier] == data.premium_tier) as PremiumTier
+            subscriptions: data.premium_subscription_count || 0,
+            tier: Object.keys(PremiumTiers).find((key) => PremiumTiers[key as PremiumTier] == data.premium_tier) as PremiumTier
         };
 
         if ('channels' in data) {
-            data.channels.sort((a, b) => parseInt(b.id) - parseInt(a.id)).forEach((apiChannel) => {
-                const channel = new Channel(client, apiChannel, this);
-                this.channels.set(channel.id, channel);
+            this.channels = new ChannelManager(client, this);
+
+            data.channels.forEach((channelData) => {
+                const channel = new Channel(channelData, this);
+
+                channel.messages = new MessageManager(channel, client, this);
+
+                this.channels.cache.set(channel.id, channel);
             });
         }
+
+        this.roles = new RoleManager(client, this);
 
         const roles = data.roles.filter((role) => role.id != this.id);
         const length = Math.max(...roles.map((role) => role.position));
 
-        roles.sort((a, b) => b.position - a.position).forEach((apiRole) => {
-            apiRole.position = length - apiRole.position + 1;
+        roles.sort((a, b) => b.position - a.position).forEach((roleData) => {
+            roleData.position = length - roleData.position + 1;
 
-            const role = new Role(client, apiRole, this);
-            this.roles.set(role.id, role);
+            const role = new Role(roleData, this);
+
+            this.roles.cache.set(role.id, role);
         });
 
         if ('members' in data) {
-            data.members.sort((a, b) => parseInt(b.user.id) - parseInt(a.user.id)).forEach((apiMember) => {
-                const presence = new Presence(data.presences.find((presence) => presence.user.id == apiMember.user.id));
-                const member = new Member(client, apiMember, this, presence);
+            this.members = new MemberManager(client, this);
 
-                this.members.set(member.user.id, member);
+            data.members.forEach((memberData) => {
+                const presence = new Presence(data.presences.find((presence) => presence.user.id == memberData.user.id));
+                const member = new Member(client, memberData, this, presence);
+
+                this.roles.cache.forEach((role) => {
+                    if (member.roles.cache.has(role.id)) {
+                        role.members.set(member.user.id, member);
+                    }
+                });
+
+                client.users.cache.set(member.user.id, member.user);
+                this.members.cache.set(member.user.id, member);
             });
+
+            this.me = this.members.cache.get(client.user.id)!;
+            this.owner = this.members.cache.get(data.owner_id)!;
+
+            Object.defineProperty(this.me, 'guild', { enumerable: false });
+            Object.defineProperty(this.owner, 'guild', { enumerable: false });
         }
 
         Object.defineProperties(this, {
+            bans: { enumerable: false },
             channels: { enumerable: false },
             members: { enumerable: false },
-            roles: { enumerable: false },
-            ownerId: { enumerable: false }
+            roles: { enumerable: false }
         });
-    }
-
-    get owner() {
-        return this.members.get(this.ownerId);
     }
 }
