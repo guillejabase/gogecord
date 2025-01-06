@@ -1,0 +1,1 @@
+{"version":3,"file":"ChannelManager.d.ts","sourceRoot":"","sources":["../../src/managers/ChannelManager.ts"],"names":[],"mappings":"AAEA,OAAO,MAAM,MAAM,sBAAsB,CAAC;AAE1C,OAAO,UAAU,MAAM,oBAAoB,CAAC;AAE5C,MAAM,CAAC,OAAO,OAAO,cAAc;IAGnB,OAAO,CAAC,MAAM;IAFnB,KAAK,6BAAoC;gBAE5B,MAAM,EAAE,MAAM;CAGrC"}

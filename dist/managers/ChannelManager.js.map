@@ -1,0 +1,1 @@
+{"version":3,"file":"ChannelManager.js","sourceRoot":"","sources":["../../src/managers/ChannelManager.ts"],"names":[],"mappings":";;;;;AAIA,oEAA4C;AAE5C,MAAqB,cAAc;IAGX;IAFb,KAAK,GAAG,IAAI,oBAAU,EAAkB,CAAC;IAEhD,YAAoB,MAAc;QAAd,WAAM,GAAN,MAAM,CAAQ;QAC9B,MAAM,CAAC,cAAc,CAAC,IAAI,EAAE,QAAQ,EAAE,EAAE,UAAU,EAAE,KAAK,EAAE,CAAC,CAAC;IACjE,CAAC;CACJ;AAND,iCAMC"}

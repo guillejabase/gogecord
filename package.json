@@ -1,0 +1,52 @@
+{
+  "name": "gogecord",
+  "version": "1.0.0",
+  "description": "A lightweight library for interacting with the [Discord API](https://discord.com/developers/docs/intro). Written in TypeScript and compiled to JavaScript, this library provides developers with the necessary tools to create powerful Discord bots quickly and easily.",
+  "main": "dist/index.js",
+  "types": "types/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "node test/index.js"
+  },
+  "repository": {
+    "directory": "packages/gogecord",
+    "type": "git",
+    "url": "git+https://github.com/guillejabase/gogecord.git"
+  },
+  "keywords": [
+    "api",
+    "app",
+    "bot",
+    "client",
+    "discord",
+    "discord-api",
+    "discordapp",
+    "javascript",
+    "fetch",
+    "node",
+    "library",
+    "types",
+    "typescript",
+    "typings"
+  ],
+  "author": "guillejabase",
+  "license": "ISC",
+  "dependencies": {
+    "discord-api-types": "^0.37.110",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "@types/ws": "^8.5.13",
+    "typescript": "^5.7.2"
+  },
+  "files": [
+    "dist",
+    "types",
+    "readme.md"
+  ],
+  "homepage": "https://github.com/guillejabase/gogecord#readme",
+  "bugs": {
+    "url": "https://github.com/guillejabase/gogecord/issues"
+  }
+}
