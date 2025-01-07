@@ -7,7 +7,6 @@ const v10_1 = require("discord-api-types/v10");
 const Collection_1 = __importDefault(require("../util/Collection"));
 class GuildMemberManager {
     guild;
-    me;
     cache = new Collection_1.default();
     constructor(guild) {
         this.guild = guild;

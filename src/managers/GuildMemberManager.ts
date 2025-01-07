@@ -6,8 +6,6 @@ import GuildMember from '../structures/GuildMember';
 import Collection from '../util/Collection';
 
 export default class GuildMemberManager {
-    public me!: GuildMember;
-
     public cache = new Collection<string, GuildMember>();
 
     constructor(private guild: Guild) {

@@ -4,7 +4,6 @@ import GuildManager from '../managers/GuildManager';
 import UserManager from '../managers/UserManager';
 import Emitter from './Emitter';
 import { type PresenceActivityType, type PresenceStatus } from './Presence';
-import User from './User';
 import Intents, { type IntentsResolvable } from '../util/Intents';
 export type ClientOptions = {
     intents: IntentsResolvable;
@@ -15,6 +14,16 @@ export type ClientRequestOptions = {
     path: string;
     body?: object;
     reason?: string;
+};
+export type ClientPresenceOptions = {
+    activities?: {
+        name: string;
+        state?: string;
+        type?: PresenceActivityType;
+        url?: string;
+    }[];
+    afk?: boolean;
+    status?: Exclude<PresenceStatus, 'Offline'>;
 };
 export default class Client extends Emitter {
     private requestQueue;
@@ -37,7 +46,6 @@ export default class Client extends Emitter {
         timestamp: number;
     };
     token: string;
-    user: User;
     webSocket: WebSocket;
     channels: ChannelManager;
     guilds: GuildManager;
@@ -47,15 +55,6 @@ export default class Client extends Emitter {
     private processRequest;
     login(token: string): Promise<void>;
     request(options: ClientRequestOptions): Promise<any>;
-    setPresence(options: {
-        activities?: {
-            name: string;
-            state?: string;
-            type?: PresenceActivityType;
-            url?: string;
-        }[];
-        afk?: boolean;
-        status?: Exclude<PresenceStatus, 'Offline'>;
-    }): Promise<void>;
+    setPresence(options: ClientPresenceOptions): Promise<void>;
 }
 //# sourceMappingURL=Client.d.ts.map

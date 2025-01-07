@@ -3,7 +3,6 @@ import GuildMember from '../structures/GuildMember';
 import Collection from '../util/Collection';
 export default class GuildMemberManager {
     private guild;
-    me: GuildMember;
     cache: Collection<string, GuildMember>;
     constructor(guild: Guild);
     deafen(memberId: string, reason?: string): Promise<void>;

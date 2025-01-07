@@ -10,14 +10,18 @@ import {
 import GuildBanManager from '../managers/GuildBanManager';
 import GuildMemberManager from '../managers/GuildMemberManager';
 import GuildRoleManager from '../managers/GuildRoleManager';
+import GuildStickerManager from '../managers/GuildStickerManager';
 
 import Client from './Client';
+import GuildEmoji from './GuildEmoji';
 import GuildMember from './GuildMember';
 import GuildRole from './GuildRole';
+import GuildSticker from './GuildSticker';
 import Presence from './Presence';
 
 import type { ImageFormat, ImageSize } from '../util/Image';
 import Snowflake from '../util/Snowflake';
+import GuildEmojiManager from '../managers/GuildEmojiManager';
 
 export enum GuildExplicitContentFilters {
     Disabled = 0,
@@ -143,8 +147,10 @@ export default class Guild {
     public verification: GuildVerificationLevel;
 
     public bans = new GuildBanManager(this);
+    public emojis = new GuildEmojiManager(this);
     public members = new GuildMemberManager(this);
     public roles = new GuildRoleManager(this);
+    public stickers = new GuildStickerManager(this);
 
     constructor(public client: Client, data: GatewayGuildCreateDispatchData | GatewayGuildUpdateDispatchData) {
         this.banner = data.banner || undefined;
@@ -157,6 +163,11 @@ export default class Guild {
         };
 
         this.description = data.description || undefined;
+
+        for (const apiEmoji of data.emojis) {
+            new GuildEmoji(client, this, apiEmoji);
+        }
+
         this.explicitContent = Object
             .keys(GuildExplicitContentFilters)
             .find((key) => {
@@ -194,15 +205,12 @@ export default class Guild {
                 .map((roleData) => roleData.position)
         );
 
-        data.roles
-            .filter((roleData) => roleData.id !== this.id)
-            .sort()
-            .forEach((roleData) => {
-                new GuildRole(client, this, {
-                    ...roleData,
-                    position: length - roleData.position + 1
-                });
+        for (const apiRole of data.roles.filter((roleData) => roleData.id === this.id).sort()) {
+            new GuildRole(client, this, {
+                ...apiRole,
+                position: length - apiRole.position + 1
             });
+        }
 
         this.roles.everyone = new GuildRole(client, this, {
             ...data.roles.find((roleData) => roleData.id === this.id)!,
@@ -225,7 +233,6 @@ export default class Guild {
                 });
             }
 
-            this.members.me = this.members.cache.get(client.user.id)!;
             this.owner = this.members.cache.get(data.owner_id)!;
         }
 
@@ -233,6 +240,11 @@ export default class Guild {
             subscriptions: data.premium_subscription_count || 0,
             tier: data.premium_tier
         };
+
+        for (const apiSticker of data.stickers) {
+            new GuildSticker(client, this, apiSticker);
+        }
+
         this.verification = Object
             .keys(GuildVerificationLevels)
             .find((key) => {
@@ -248,7 +260,6 @@ export default class Guild {
             members: { enumerable: false },
             roles: { enumerable: false }
         });
-        Object.defineProperty(this.members.me, 'guild', { enumerable: false });
         Object.defineProperty(this.owner, 'guild', { enumerable: false });
     }
 

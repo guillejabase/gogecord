@@ -20,7 +20,6 @@ class Client extends Emitter_1.default {
     presence;
     ready;
     token;
-    user;
     webSocket;
     channels = new ChannelManager_1.default(this);
     guilds = new GuildManager_1.default(this);

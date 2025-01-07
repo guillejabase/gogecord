@@ -1,8 +1,10 @@
 import Client from './Client';
 import Guild from './Guild';
 import GuildBan from './GuildBan';
+import GuildEmoji from './GuildEmoji';
 import GuildMember from './GuildMember';
 import GuildRole from './GuildRole';
+import GuildSticker from './GuildSticker';
 import Presence from './Presence';
 import User from './User';
 
@@ -11,12 +13,23 @@ export type Events = {
     'GuildBanRemove': [ban: GuildBan];
     'GuildCreate': [guild: Guild];
     'GuildDelete': [guild: Guild];
+    'GuildEmojisUpdate': [emojis: {
+        created: GuildEmoji[];
+        updated: GuildEmoji[];
+        deleted: GuildEmoji[];
+    }];
     'GuildMemberAdd': [member: GuildMember];
     'GuildMemberRemove': [member: GuildMember];
     'GuildMemberUpdate': [oldMember: GuildMember, newMember: GuildMember];
     'GuildRoleCreate': [role: GuildRole];
     'GuildRoleDelete': [role: GuildRole];
     'GuildRoleUpdate': [oldRole: GuildRole, newRole: GuildRole];
+    'GuildStickersUpdate': [stickers: {
+        created: GuildSticker[];
+        updated: GuildSticker[];
+        deleted: GuildSticker[];
+    }];
+    'GuildUpdate': [oldGuild: Guild, newGuild: Guild];
     'PresenceUpdate': [oldPresence: Presence, newPresence: Presence];
     'Ready': [client: Client];
     'UserUpdate': [oldUser: User, newUser: User];

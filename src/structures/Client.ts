@@ -8,7 +8,6 @@ import UserManager from '../managers/UserManager';
 import Emitter from './Emitter';
 import GatewayEvent from './GatewayEvent';
 import { type PresenceActivityType, PresenceActivityTypes, type PresenceStatus, PresenceStatuses } from './Presence';
-import User from './User';
 
 import Intents, { type IntentsResolvable } from '../util/Intents';
 
@@ -21,6 +20,16 @@ export type ClientRequestOptions = {
     path: string;
     body?: object;
     reason?: string;
+};
+export type ClientPresenceOptions = {
+    activities?: {
+        name: string;
+        state?: string;
+        type?: PresenceActivityType;
+        url?: string;
+    }[];
+    afk?: boolean;
+    status?: Exclude<PresenceStatus, 'Offline'>;
 };
 
 export default class Client extends Emitter {
@@ -48,7 +57,6 @@ export default class Client extends Emitter {
         timestamp: number;
     };
     public token!: string;
-    public user!: User;
     public webSocket!: WebSocket;
 
     public channels = new ChannelManager(this);
@@ -203,16 +211,7 @@ export default class Client extends Emitter {
             this.processQueue();
         });
     }
-    public async setPresence(options: {
-        activities?: {
-            name: string;
-            state?: string;
-            type?: PresenceActivityType;
-            url?: string;
-        }[];
-        afk?: boolean;
-        status?: Exclude<PresenceStatus, 'Offline'>;
-    }): Promise<void> {
+    public async setPresence(options: ClientPresenceOptions): Promise<void> {
         this.presence = {
             activities: options.activities?.map((activity) => ({
                 ...activity,

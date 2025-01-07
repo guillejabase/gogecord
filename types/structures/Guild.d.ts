@@ -2,9 +2,11 @@ import { type GatewayGuildCreateDispatchData, type GatewayGuildUpdateDispatchDat
 import GuildBanManager from '../managers/GuildBanManager';
 import GuildMemberManager from '../managers/GuildMemberManager';
 import GuildRoleManager from '../managers/GuildRoleManager';
+import GuildStickerManager from '../managers/GuildStickerManager';
 import Client from './Client';
 import GuildMember from './GuildMember';
 import type { ImageFormat, ImageSize } from '../util/Image';
+import GuildEmojiManager from '../managers/GuildEmojiManager';
 export declare enum GuildExplicitContentFilters {
     Disabled = 0,
     MembersWithoutRoles = 1,
@@ -127,8 +129,10 @@ export default class Guild {
     };
     verification: GuildVerificationLevel;
     bans: GuildBanManager;
+    emojis: GuildEmojiManager;
     members: GuildMemberManager;
     roles: GuildRoleManager;
+    stickers: GuildStickerManager;
     constructor(client: Client, data: GatewayGuildCreateDispatchData | GatewayGuildUpdateDispatchData);
     bannerURL(options: {
         format?: ImageFormat;
