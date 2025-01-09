@@ -13,14 +13,14 @@ export default class GuildMemberRoleManager {
     }
 
     public async add(roleId: string, reason?: string): Promise<void> {
-        await this.member.client.request({
+        await this.member.guild.client.request({
             method: 'put',
             path: Routes.guildMemberRole(this.member.guild.id, this.member.user.id, roleId),
             reason
         });
     }
     public async remove(roleId: string, reason?: string): Promise<void> {
-        await this.member.client.request({
+        await this.member.guild.client.request({
             method: 'delete',
             path: Routes.guildMemberRole(this.member.guild.id, this.member.user.id, roleId),
             reason

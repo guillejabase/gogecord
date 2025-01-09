@@ -8,7 +8,7 @@ export default new GatewayEvent({
         const guild = client.guilds.cache.get(data.guild_id)!;
         const oldMember = guild.members.cache.get(data.user.id)!;
 
-        client.emit('GuildMemberUpdate', oldMember, new GuildMember(client, guild, {
+        client.emit('GuildMemberUpdate', oldMember, new GuildMember(guild, {
             ...data,
             presence: oldMember.presence
         }));

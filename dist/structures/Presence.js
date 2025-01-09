@@ -1,46 +1,40 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.PresenceStatuses = exports.PresenceActivityTypes = void 0;
-var PresenceActivityTypes;
-(function (PresenceActivityTypes) {
-    PresenceActivityTypes[PresenceActivityTypes["Playing"] = 0] = "Playing";
-    PresenceActivityTypes[PresenceActivityTypes["Streaming"] = 1] = "Streaming";
-    PresenceActivityTypes[PresenceActivityTypes["Listening"] = 2] = "Listening";
-    PresenceActivityTypes[PresenceActivityTypes["Watching"] = 3] = "Watching";
-    PresenceActivityTypes[PresenceActivityTypes["Custom"] = 4] = "Custom";
-    PresenceActivityTypes[PresenceActivityTypes["Competing"] = 5] = "Competing";
-})(PresenceActivityTypes || (exports.PresenceActivityTypes = PresenceActivityTypes = {}));
-;
-class Activity {
-    created;
-    details;
-    id;
-    name;
-    started;
-    state;
-    type;
-    url;
-    constructor(data) {
-        this.created = {
-            at: new Date(data.created_at),
-            timestamp: data.created_at
-        };
-        this.details = data.details || undefined;
-        this.id = data.id;
-        this.name = data.name;
-        this.started = {
-            at: data.timestamps?.start ? new Date(data.timestamps.start) : undefined,
-            timestamp: data.timestamps?.start
-        };
-        this.state = data.state || undefined;
-        this.type = Object
-            .keys(PresenceActivityTypes)
-            .find((key) => {
-            return PresenceActivityTypes[key] === data.type;
-        });
-        this.url = data.url || undefined;
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
     }
-}
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.PresenceStatuses = void 0;
+const Activity_1 = __importStar(require("./Activity"));
 var PresenceStatuses;
 (function (PresenceStatuses) {
     PresenceStatuses["DoNotDisturb"] = "dnd";
@@ -56,13 +50,13 @@ class Presence {
     constructor(data) {
         this.activities = data?.activities
             ?.filter((activity) => {
-            PresenceActivityTypes['Custom'] !== activity.type;
+            Activity_1.ActivityTypes['Custom'] !== activity.type;
         })
             .map((activity) => {
-            return new Activity(activity);
+            return new Activity_1.default(activity);
         }) || [];
         const custom = data?.activities?.find((activity) => {
-            PresenceActivityTypes['Custom'] === activity.type;
+            Activity_1.ActivityTypes['Custom'] === activity.type;
         });
         let emoji;
         if (custom?.emoji) {

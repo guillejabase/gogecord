@@ -1,6 +1,5 @@
 import { type APIRole, CDNRoutes, type RoleIconFormat, RouteBases } from 'discord-api-types/v10';
 
-import Client from './Client';
 import Guild from './Guild';
 import GuildMember from './GuildMember';
 
@@ -31,7 +30,7 @@ export default class GuildRole {
 
     public members = new Collection<string, GuildMember>();
 
-    constructor(public client: Client, public guild: Guild, data: APIRole) {
+    constructor(public guild: Guild, data: APIRole) {
         this.color = {
             decimal: data.color,
             hex: data.color.toString(16).padStart(6, '0')
@@ -54,7 +53,7 @@ export default class GuildRole {
         this.position = data.position;
 
         guild.roles.cache.set(this.id, this);
-        client.guilds.cache.set(this.guild.id, this.guild);
+        guild.client.guilds.cache.set(this.guild.id, this.guild);
 
         Object.defineProperties(this, {
             client: { enumerable: false },

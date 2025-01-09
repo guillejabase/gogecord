@@ -1,0 +1,1 @@
+{"version":3,"file":"GuildStageVoiceChannel.js","sourceRoot":"","sources":["../../src/structures/GuildStageVoiceChannel.ts"],"names":[],"mappings":";;;;;AAGA,sFAA8D;AAE9D,MAAqB,sBAAuB,SAAQ,gCAAsB;IACtD,IAAI,GAAG,iBAAiB,CAAC;IAEzC,YAAY,KAAY,EAAE,IAA+B;QACrD,KAAK,CAAC,KAAK,EAAE,IAAI,CAAC,CAAC;IACvB,CAAC;CACJ;AAND,yCAMC"}

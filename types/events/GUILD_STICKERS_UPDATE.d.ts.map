@@ -1,1 +1,1 @@
-{"version":3,"file":"GUILD_STICKERS_UPDATE.d.ts","sourceRoot":"","sources":["../../src/events/GUILD_STICKERS_UPDATE.ts"],"names":[],"mappings":"AAAA,OAAO,YAAY,MAAM,4BAA4B,CAAC;;AAGtD,wBA8BG"}
+{"version":3,"file":"GUILD_STICKERS_UPDATE.d.ts","sourceRoot":"","sources":["../../src/events/GUILD_STICKERS_UPDATE.ts"],"names":[],"mappings":"AAAA,OAAO,YAAY,MAAM,4BAA4B,CAAC;;AAEtD,wBAKG"}

@@ -1,12 +1,13 @@
 import { type GatewayGuildCreateDispatchData, type GatewayGuildUpdateDispatchData } from 'discord-api-types/v10';
 import GuildBanManager from '../managers/GuildBanManager';
+import GuildChannelManager from '../managers/GuildChannelManager';
+import GuildEmojiManager from '../managers/GuildEmojiManager';
 import GuildMemberManager from '../managers/GuildMemberManager';
 import GuildRoleManager from '../managers/GuildRoleManager';
 import GuildStickerManager from '../managers/GuildStickerManager';
 import Client from './Client';
 import GuildMember from './GuildMember';
 import type { ImageFormat, ImageSize } from '../util/Image';
-import GuildEmojiManager from '../managers/GuildEmojiManager';
 export declare enum GuildExplicitContentFilters {
     Disabled = 0,
     MembersWithoutRoles = 1,
@@ -129,6 +130,7 @@ export default class Guild {
     };
     verification: GuildVerificationLevel;
     bans: GuildBanManager;
+    channels: GuildChannelManager;
     emojis: GuildEmojiManager;
     members: GuildMemberManager;
     roles: GuildRoleManager;

@@ -26,7 +26,7 @@ export default class GuildRoleManager {
     public async create(options: GuildRoleManagerOptions & {
         name: string;
     }, reason?: string): Promise<GuildRole> {
-        return new GuildRole(this.guild.client, this.guild, await this.guild.client.request({
+        return new GuildRole(this.guild, await this.guild.client.request({
             method: 'post',
             path: Routes.guildRoles(this.guild.id),
             body: {
@@ -50,7 +50,7 @@ export default class GuildRoleManager {
     public async edit(roleId: string, options: GuildRoleManagerOptions & {
         name?: string;
     }, reason?: string): Promise<GuildRole> {
-        return new GuildRole(this.guild.client, this.guild, await this.guild.client.request({
+        return new GuildRole(this.guild, await this.guild.client.request({
             method: 'patch',
             path: Routes.guildRole(this.guild.id, roleId),
             body: {

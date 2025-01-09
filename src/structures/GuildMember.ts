@@ -9,7 +9,6 @@ import {
 
 import GuildMemberRoleManager from '../managers/GuildMemberRoleManager';
 
-import Client from './Client';
 import Guild from './Guild';
 import Presence from './Presence';
 import User from './User';
@@ -18,7 +17,11 @@ import GuildMemberFlags from '../util/GuildMemberFlags';
 import type { ImageFormat, ImageSize } from '../util/Image';
 import Permissions from '../util/Permissions';
 
-type APIFullGuildMember = (APIGuildMember | GatewayGuildMemberAddDispatchData | GatewayGuildMemberUpdateDispatchData) & {
+type APIFullGuildMember = (
+    | APIGuildMember
+    | GatewayGuildMemberAddDispatchData
+    | GatewayGuildMemberUpdateDispatchData
+) & {
     presence?: Presence;
 };
 
@@ -46,7 +49,7 @@ export default class GuildMember {
 
     public roles = new GuildMemberRoleManager(this);
 
-    constructor(public client: Client, public guild: Guild, data: APIFullGuildMember) {
+    constructor(public guild: Guild, data: APIFullGuildMember) {
         this.avatar = data.avatar || undefined;
 
         const boosting = Date.parse(data.premium_since!);
@@ -91,10 +94,10 @@ export default class GuildMember {
             timestamp: timeout
         };
 
-        this.user = new User(client, data.user);
+        this.user = new User(guild.client, data.user);
 
         guild.members.cache.set(this.user.id, this);
-        client.users.cache.set(this.user.id, this.user);
+        guild.client.users.cache.set(this.user.id, this.user);
 
         Object.defineProperties(this, {
             client: { enumerable: false },

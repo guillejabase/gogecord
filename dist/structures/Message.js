@@ -7,18 +7,17 @@ const MessageFlags_1 = __importDefault(require("../util/MessageFlags"));
 class Message {
     client;
     author;
+    // public channel: any;
     content;
     created;
     edited;
     flags;
-    guild;
     id;
-    member;
     constructor(client, data) {
         this.client = client;
         this.author = client.users.cache.get(data.author.id);
+        // this.channel = client.channels.cache.get(data.channel_id)! as DMChannel | GuildTextBasedChannel;
         this.content = data.content;
-        data.flags;
         const created = Date.parse(data.timestamp);
         this.created = {
             at: new Date(created),
@@ -30,10 +29,6 @@ class Message {
             timestamp: edited
         } : {};
         this.flags = new MessageFlags_1.default(data.flags);
-        if (data.guild_id) {
-            this.guild = client.guilds.cache.get(data.guild_id);
-            this.member = this.guild.members.cache.get(data.author.id);
-        }
         this.id = data.id;
         Object.defineProperty(this, 'client', { enumerable: false });
     }

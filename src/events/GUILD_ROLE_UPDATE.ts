@@ -7,6 +7,6 @@ export default new GatewayEvent({
     run: (client, data) => {
         const guild = client.guilds.cache.get(data.guild_id)!;
 
-        client.emit('GuildRoleUpdate', guild.roles.cache.get(data.role.id)!, new GuildRole(client, guild, data.role));
+        client.emit('GuildRoleUpdate', guild.roles.cache.get(data.role.id)!, new GuildRole(guild, data.role));
     }
 });

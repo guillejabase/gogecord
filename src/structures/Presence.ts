@@ -1,53 +1,6 @@
-import type { GatewayActivity, GatewayPresenceUpdateDispatchData } from 'discord-api-types/v10';
+import type { GatewayPresenceUpdateDispatchData } from 'discord-api-types/v10';
 
-export enum PresenceActivityTypes {
-    Playing = 0,
-    Streaming = 1,
-    Listening = 2,
-    Watching = 3,
-    Custom = 4,
-    Competing = 5
-};
-
-export type PresenceActivityType = keyof typeof PresenceActivityTypes;
-
-class Activity {
-    public created: {
-        at: Date;
-        timestamp: number;
-    };
-    public details?: string;
-    public id: string;
-    public name: string;
-    public started: {
-        at?: Date;
-        timestamp?: number;
-    };
-    public state?: string;
-    public type: PresenceActivityType;
-    public url?: string;
-
-    constructor(data: GatewayActivity) {
-        this.created = {
-            at: new Date(data.created_at),
-            timestamp: data.created_at
-        };
-        this.details = data.details || undefined;
-        this.id = data.id;
-        this.name = data.name;
-        this.started = {
-            at: data.timestamps?.start ? new Date(data.timestamps.start) : undefined,
-            timestamp: data.timestamps?.start
-        };
-        this.state = data.state || undefined;
-        this.type = Object
-            .keys(PresenceActivityTypes)
-            .find((key) => {
-                return PresenceActivityTypes[key as PresenceActivityType] as number === data.type;
-            }) as PresenceActivityType;
-        this.url = data.url || undefined;
-    }
-}
+import Activity, { ActivityTypes } from './Activity';
 
 export enum PresenceStatuses {
     DoNotDisturb = 'dnd',
@@ -74,14 +27,14 @@ export default class Presence {
     constructor(data?: GatewayPresenceUpdateDispatchData) {
         this.activities = data?.activities
             ?.filter((activity) => {
-                PresenceActivityTypes['Custom'] as number !== activity.type;
+                ActivityTypes['Custom'] as number !== activity.type;
             })
             .map((activity) => {
                 return new Activity(activity);
             }) || [];
 
         const custom = data?.activities?.find((activity) => {
-            PresenceActivityTypes['Custom'] as number === activity.type;
+            ActivityTypes['Custom'] as number === activity.type;
         });
         let emoji: string | undefined;
 

@@ -44,6 +44,9 @@ class Channel {
         });
         Object.defineProperty(this, 'client', { enumerable: false });
     }
+    toString() {
+        return `<#${this.id}>`;
+    }
 }
 exports.default = Channel;
 //# sourceMappingURL=Channel.js.map

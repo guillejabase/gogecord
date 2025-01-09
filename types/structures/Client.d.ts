@@ -2,8 +2,11 @@ import WebSocket from 'ws';
 import ChannelManager from '../managers/ChannelManager';
 import GuildManager from '../managers/GuildManager';
 import UserManager from '../managers/UserManager';
+import { type ActivityType } from './Activity';
 import Emitter from './Emitter';
-import { type PresenceActivityType, type PresenceStatus } from './Presence';
+import PartialApplication from './PartialApplication';
+import { type PresenceStatus } from './Presence';
+import User from './User';
 import Intents, { type IntentsResolvable } from '../util/Intents';
 export type ClientOptions = {
     intents: IntentsResolvable;
@@ -19,7 +22,7 @@ export type ClientPresenceOptions = {
     activities?: {
         name: string;
         state?: string;
-        type?: PresenceActivityType;
+        type?: ActivityType;
         url?: string;
     }[];
     afk?: boolean;
@@ -35,7 +38,7 @@ export default class Client extends Emitter {
         activities: {
             name: string;
             state?: string;
-            type: PresenceActivityType;
+            type: ActivityType;
             url?: string;
         }[];
         afk: boolean;
@@ -46,7 +49,9 @@ export default class Client extends Emitter {
         timestamp: number;
     };
     token: string;
+    user: User;
     webSocket: WebSocket;
+    application: PartialApplication;
     channels: ChannelManager;
     guilds: GuildManager;
     users: UserManager;

@@ -50,4 +50,8 @@ export default class Channel {
 
         Object.defineProperty(this, 'client', { enumerable: false });
     }
+
+    public toString(): string {
+        return `<#${this.id}>`;
+    }
 }

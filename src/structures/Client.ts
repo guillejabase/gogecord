@@ -5,9 +5,12 @@ import ChannelManager from '../managers/ChannelManager';
 import GuildManager from '../managers/GuildManager';
 import UserManager from '../managers/UserManager';
 
+import { type ActivityType, ActivityTypes } from './Activity';
 import Emitter from './Emitter';
 import GatewayEvent from './GatewayEvent';
-import { type PresenceActivityType, PresenceActivityTypes, type PresenceStatus, PresenceStatuses } from './Presence';
+import PartialApplication from './PartialApplication';
+import { type PresenceStatus, PresenceStatuses } from './Presence';
+import User from './User';
 
 import Intents, { type IntentsResolvable } from '../util/Intents';
 
@@ -25,7 +28,7 @@ export type ClientPresenceOptions = {
     activities?: {
         name: string;
         state?: string;
-        type?: PresenceActivityType;
+        type?: ActivityType;
         url?: string;
     }[];
     afk?: boolean;
@@ -46,7 +49,7 @@ export default class Client extends Emitter {
         activities: {
             name: string;
             state?: string;
-            type: PresenceActivityType;
+            type: ActivityType;
             url?: string;
         }[];
         afk: boolean;
@@ -57,8 +60,10 @@ export default class Client extends Emitter {
         timestamp: number;
     };
     public token!: string;
+    public user!: User;
     public webSocket!: WebSocket;
 
+    public application = new PartialApplication(this);
     public channels = new ChannelManager(this);
     public guilds = new GuildManager(this);
     public users = new UserManager(this);
@@ -80,6 +85,7 @@ export default class Client extends Emitter {
             retryAfter: { enumerable: false },
             token: { enumerable: false },
             webSocket: { enumerable: false },
+            application: { enumerable: false },
             channels: { enumerable: false },
             guilds: { enumerable: false },
             users: { enumerable: false }
@@ -226,7 +232,7 @@ export default class Client extends Emitter {
             d: {
                 activities: this.presence.activities.map((activity) => ({
                     ...activity,
-                    type: PresenceActivityTypes[activity.type] as number
+                    type: ActivityTypes[activity.type] as number
                 })),
                 afk: this.presence.afk,
                 since: Date.now(),

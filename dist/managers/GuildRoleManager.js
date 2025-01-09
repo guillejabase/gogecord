@@ -16,7 +16,7 @@ class GuildRoleManager {
         Object.defineProperty(this, 'guild', { enumerable: false });
     }
     async create(options, reason) {
-        return new GuildRole_1.default(this.guild.client, this.guild, await this.guild.client.request({
+        return new GuildRole_1.default(this.guild, await this.guild.client.request({
             method: 'post',
             path: v10_1.Routes.guildRoles(this.guild.id),
             body: {
@@ -38,7 +38,7 @@ class GuildRoleManager {
         });
     }
     async edit(roleId, options, reason) {
-        return new GuildRole_1.default(this.guild.client, this.guild, await this.guild.client.request({
+        return new GuildRole_1.default(this.guild, await this.guild.client.request({
             method: 'patch',
             path: v10_1.Routes.guildRole(this.guild.id, roleId),
             body: {

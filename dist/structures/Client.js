@@ -8,7 +8,9 @@ const ws_1 = __importDefault(require("ws"));
 const ChannelManager_1 = __importDefault(require("../managers/ChannelManager"));
 const GuildManager_1 = __importDefault(require("../managers/GuildManager"));
 const UserManager_1 = __importDefault(require("../managers/UserManager"));
+const Activity_1 = require("./Activity");
 const Emitter_1 = __importDefault(require("./Emitter"));
+const PartialApplication_1 = __importDefault(require("./PartialApplication"));
 const Presence_1 = require("./Presence");
 const Intents_1 = __importDefault(require("../util/Intents"));
 class Client extends Emitter_1.default {
@@ -20,7 +22,9 @@ class Client extends Emitter_1.default {
     presence;
     ready;
     token;
+    user;
     webSocket;
+    application = new PartialApplication_1.default(this);
     channels = new ChannelManager_1.default(this);
     guilds = new GuildManager_1.default(this);
     users = new UserManager_1.default(this);
@@ -39,6 +43,7 @@ class Client extends Emitter_1.default {
             retryAfter: { enumerable: false },
             token: { enumerable: false },
             webSocket: { enumerable: false },
+            application: { enumerable: false },
             channels: { enumerable: false },
             guilds: { enumerable: false },
             users: { enumerable: false }
@@ -165,7 +170,7 @@ class Client extends Emitter_1.default {
             d: {
                 activities: this.presence.activities.map((activity) => ({
                     ...activity,
-                    type: Presence_1.PresenceActivityTypes[activity.type]
+                    type: Activity_1.ActivityTypes[activity.type]
                 })),
                 afk: this.presence.afk,
                 since: Date.now(),

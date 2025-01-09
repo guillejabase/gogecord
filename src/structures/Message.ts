@@ -1,14 +1,17 @@
 import type { GatewayMessageCreateDispatchData, GatewayMessageUpdateDispatchData } from 'discord-api-types/v10';
 
+import type { MessageOptions } from '../managers/MessageManager';
+
 import Client from './Client';
-import Guild from './Guild';
-import GuildMember from './GuildMember';
+import GuildTextBasedChannel from './GuildTextBasedChannel';
 import User from './User';
 
 import MessageFlags from '../util/MessageFlags';
+import DMChannel from './DMChannel';
 
 export default class Message {
     public author: User;
+    // public channel: any;
     public content: string;
     public created: {
         at: Date;
@@ -19,15 +22,12 @@ export default class Message {
         timestamp?: number;
     };
     public flags: MessageFlags;
-    public guild?: Guild;
     public id: string;
-    public member?: Omit<GuildMember, 'user'>;
 
     constructor(public client: Client, data: GatewayMessageCreateDispatchData | GatewayMessageUpdateDispatchData) {
         this.author = client.users.cache.get(data.author.id)!;
+        // this.channel = client.channels.cache.get(data.channel_id)! as DMChannel | GuildTextBasedChannel;
         this.content = data.content;
-
-        data.flags;
 
         const created = Date.parse(data.timestamp);
         this.created = {
@@ -42,14 +42,15 @@ export default class Message {
         } : {};
 
         this.flags = new MessageFlags(data.flags!);
-
-        if (data.guild_id) {
-            this.guild = client.guilds.cache.get(data.guild_id)!;
-            this.member = this.guild.members.cache.get(data.author.id)!;
-        }
-
         this.id = data.id;
 
         Object.defineProperty(this, 'client', { enumerable: false });
     }
+
+    // public async reply(options: Omit<MessageOptions, 'reference'>): Promise<Message> {
+    //     return await this.channel.messages.send({
+    //         ...options,
+    //         reference: this.id
+    //     });
+    // }
 }

@@ -17,7 +17,7 @@ export default class GuildBanManager {
         days?: number;
     }): Promise<GuildBan> {
         try {
-            return new GuildBan(this.guild.client, this.guild, await this.guild.client.request({
+            return new GuildBan(this.guild, await this.guild.client.request({
                 method: 'put',
                 path: Routes.guildBan(this.guild.id, userId),
                 body: {

@@ -1,10 +1,9 @@
 import Guild from '../structures/Guild';
-import GuildEmoji from '../structures/GuildEmoji';
+import Emoji from '../structures/Emoji';
 import Collection from '../util/Collection';
 export default class GuildEmojiManager {
     private guild;
-    cache: Collection<string, GuildEmoji>;
+    cache: Collection<string, Emoji>;
     constructor(guild: Guild);
-    delete(emojiId: string, reason?: string): Promise<void>;
 }
 //# sourceMappingURL=GuildEmojiManager.d.ts.map

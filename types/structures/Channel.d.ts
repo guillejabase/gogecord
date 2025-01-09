@@ -27,5 +27,6 @@ export default class Channel {
     id: string;
     readonly type: ChannelType;
     constructor(client: Client, data: APIChannel);
+    toString(): string;
 }
 //# sourceMappingURL=Channel.d.ts.map

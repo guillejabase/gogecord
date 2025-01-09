@@ -1,30 +1,5 @@
-import type { GatewayActivity, GatewayPresenceUpdateDispatchData } from 'discord-api-types/v10';
-export declare enum PresenceActivityTypes {
-    Playing = 0,
-    Streaming = 1,
-    Listening = 2,
-    Watching = 3,
-    Custom = 4,
-    Competing = 5
-}
-export type PresenceActivityType = keyof typeof PresenceActivityTypes;
-declare class Activity {
-    created: {
-        at: Date;
-        timestamp: number;
-    };
-    details?: string;
-    id: string;
-    name: string;
-    started: {
-        at?: Date;
-        timestamp?: number;
-    };
-    state?: string;
-    type: PresenceActivityType;
-    url?: string;
-    constructor(data: GatewayActivity);
-}
+import type { GatewayPresenceUpdateDispatchData } from 'discord-api-types/v10';
+import Activity from './Activity';
 export declare enum PresenceStatuses {
     DoNotDisturb = "dnd",
     Idle = "idle",
@@ -46,5 +21,4 @@ export default class Presence {
     status: PresenceStatus;
     constructor(data?: GatewayPresenceUpdateDispatchData);
 }
-export {};
 //# sourceMappingURL=Presence.d.ts.map

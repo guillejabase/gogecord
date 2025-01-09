@@ -10,7 +10,6 @@ const User_1 = __importDefault(require("./User"));
 const GuildMemberFlags_1 = __importDefault(require("../util/GuildMemberFlags"));
 const Permissions_1 = __importDefault(require("../util/Permissions"));
 class GuildMember {
-    client;
     guild;
     avatar;
     boosting;
@@ -24,8 +23,7 @@ class GuildMember {
     timedOut;
     user;
     roles = new GuildMemberRoleManager_1.default(this);
-    constructor(client, guild, data) {
-        this.client = client;
+    constructor(guild, data) {
         this.guild = guild;
         this.avatar = data.avatar || undefined;
         const boosting = Date.parse(data.premium_since);
@@ -60,9 +58,9 @@ class GuildMember {
             until: timeout ? new Date(timeout) : undefined,
             timestamp: timeout
         };
-        this.user = new User_1.default(client, data.user);
+        this.user = new User_1.default(guild.client, data.user);
         guild.members.cache.set(this.user.id, this);
-        client.users.cache.set(this.user.id, this.user);
+        guild.client.users.cache.set(this.user.id, this.user);
         Object.defineProperties(this, {
             client: { enumerable: false },
             guild: { enumerable: false },

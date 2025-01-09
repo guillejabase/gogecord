@@ -9,7 +9,7 @@ exports.default = new GatewayEvent_1.default({
     name: 'GUILD_ROLE_UPDATE',
     run: (client, data) => {
         const guild = client.guilds.cache.get(data.guild_id);
-        client.emit('GuildRoleUpdate', guild.roles.cache.get(data.role.id), new GuildRole_1.default(client, guild, data.role));
+        client.emit('GuildRoleUpdate', guild.roles.cache.get(data.role.id), new GuildRole_1.default(guild, data.role));
     }
 });
 //# sourceMappingURL=GUILD_ROLE_UPDATE.js.map

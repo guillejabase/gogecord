@@ -8,20 +8,19 @@ import {
 } from 'discord-api-types/v10';
 
 import GuildBanManager from '../managers/GuildBanManager';
+import GuildChannelManager from '../managers/GuildChannelManager';
+import GuildEmojiManager from '../managers/GuildEmojiManager';
 import GuildMemberManager from '../managers/GuildMemberManager';
 import GuildRoleManager from '../managers/GuildRoleManager';
 import GuildStickerManager from '../managers/GuildStickerManager';
 
 import Client from './Client';
-import GuildEmoji from './GuildEmoji';
 import GuildMember from './GuildMember';
 import GuildRole from './GuildRole';
-import GuildSticker from './GuildSticker';
 import Presence from './Presence';
 
 import type { ImageFormat, ImageSize } from '../util/Image';
 import Snowflake from '../util/Snowflake';
-import GuildEmojiManager from '../managers/GuildEmojiManager';
 
 export enum GuildExplicitContentFilters {
     Disabled = 0,
@@ -147,6 +146,7 @@ export default class Guild {
     public verification: GuildVerificationLevel;
 
     public bans = new GuildBanManager(this);
+    public channels = new GuildChannelManager(this);
     public emojis = new GuildEmojiManager(this);
     public members = new GuildMemberManager(this);
     public roles = new GuildRoleManager(this);
@@ -163,11 +163,6 @@ export default class Guild {
         };
 
         this.description = data.description || undefined;
-
-        for (const apiEmoji of data.emojis) {
-            new GuildEmoji(client, this, apiEmoji);
-        }
-
         this.explicitContent = Object
             .keys(GuildExplicitContentFilters)
             .find((key) => {
@@ -206,20 +201,20 @@ export default class Guild {
         );
 
         for (const apiRole of data.roles.filter((roleData) => roleData.id === this.id).sort()) {
-            new GuildRole(client, this, {
+            new GuildRole(this, {
                 ...apiRole,
                 position: length - apiRole.position + 1
             });
         }
 
-        this.roles.everyone = new GuildRole(client, this, {
+        this.roles.everyone = new GuildRole(this, {
             ...data.roles.find((roleData) => roleData.id === this.id)!,
             position: data.roles.length
         });
 
         if ('members' in data) {
             for (const apiMember of data.members) {
-                const member = new GuildMember(client, this, {
+                const member = new GuildMember(this, {
                     ...apiMember,
                     presence: new Presence(data.presences.find((apiPresence) => apiMember.user.id === apiPresence.user.id))
                 });
@@ -240,11 +235,6 @@ export default class Guild {
             subscriptions: data.premium_subscription_count || 0,
             tier: data.premium_tier
         };
-
-        for (const apiSticker of data.stickers) {
-            new GuildSticker(client, this, apiSticker);
-        }
-
         this.verification = Object
             .keys(GuildVerificationLevels)
             .find((key) => {

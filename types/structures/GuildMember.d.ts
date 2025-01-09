@@ -1,6 +1,5 @@
 import { type APIGuildMember, type GatewayGuildMemberAddDispatchData, type GatewayGuildMemberUpdateDispatchData } from 'discord-api-types/v10';
 import GuildMemberRoleManager from '../managers/GuildMemberRoleManager';
-import Client from './Client';
 import Guild from './Guild';
 import Presence from './Presence';
 import User from './User';
@@ -11,7 +10,6 @@ type APIFullGuildMember = (APIGuildMember | GatewayGuildMemberAddDispatchData | 
     presence?: Presence;
 };
 export default class GuildMember {
-    client: Client;
     guild: Guild;
     avatar?: string;
     boosting: {
@@ -34,7 +32,7 @@ export default class GuildMember {
     };
     user: User;
     roles: GuildMemberRoleManager;
-    constructor(client: Client, guild: Guild, data: APIFullGuildMember);
+    constructor(guild: Guild, data: APIFullGuildMember);
     avatarURL(options: {
         format?: ImageFormat;
         size?: ImageSize;

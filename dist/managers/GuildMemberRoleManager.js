@@ -13,14 +13,14 @@ class GuildMemberRoleManager {
         Object.defineProperty(this, 'member', { enumerable: false });
     }
     async add(roleId, reason) {
-        await this.member.client.request({
+        await this.member.guild.client.request({
             method: 'put',
             path: v10_1.Routes.guildMemberRole(this.member.guild.id, this.member.user.id, roleId),
             reason
         });
     }
     async remove(roleId, reason) {
-        await this.member.client.request({
+        await this.member.guild.client.request({
             method: 'delete',
             path: v10_1.Routes.guildMemberRole(this.member.guild.id, this.member.user.id, roleId),
             reason

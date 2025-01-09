@@ -1,0 +1,1 @@
+{"version":3,"file":"ApplicationEmojiManager.js","sourceRoot":"","sources":["../../src/managers/ApplicationEmojiManager.ts"],"names":[],"mappings":";;;;;AAKA,oEAA4C;AAE5C,MAAqB,uBAAuB;IAGpB;IAFb,KAAK,GAAG,IAAI,oBAAU,EAAiB,CAAC;IAE/C,YAAoB,WAA+B;QAA/B,gBAAW,GAAX,WAAW,CAAoB;QAC/C,MAAM,CAAC,cAAc,CAAC,IAAI,EAAE,aAAa,EAAE,EAAE,UAAU,EAAE,KAAK,EAAE,CAAC,CAAC;IACtE,CAAC;CACJ;AAND,0CAMC"}

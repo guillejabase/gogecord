@@ -9,7 +9,6 @@ const GuildRoleFlags_1 = __importDefault(require("../util/GuildRoleFlags"));
 const Permissions_1 = __importDefault(require("../util/Permissions"));
 const Snowflake_1 = __importDefault(require("../util/Snowflake"));
 class GuildRole {
-    client;
     guild;
     color;
     created;
@@ -23,8 +22,7 @@ class GuildRole {
     permissions;
     position;
     members = new Collection_1.default();
-    constructor(client, guild, data) {
-        this.client = client;
+    constructor(guild, data) {
         this.guild = guild;
         this.color = {
             decimal: data.color,
@@ -45,7 +43,7 @@ class GuildRole {
         this.permissions = new Permissions_1.default(BigInt(data.permissions));
         this.position = data.position;
         guild.roles.cache.set(this.id, this);
-        client.guilds.cache.set(this.guild.id, this.guild);
+        guild.client.guilds.cache.set(this.guild.id, this.guild);
         Object.defineProperties(this, {
             client: { enumerable: false },
             guild: { enumerable: false },

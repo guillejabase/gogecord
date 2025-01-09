@@ -15,7 +15,7 @@ class GuildBanManager {
     }
     async add(userId, options) {
         try {
-            return new GuildBan_1.default(this.guild.client, this.guild, await this.guild.client.request({
+            return new GuildBan_1.default(this.guild, await this.guild.client.request({
                 method: 'put',
                 path: v10_1.Routes.guildBan(this.guild.id, userId),
                 body: {
