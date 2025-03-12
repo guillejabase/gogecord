@@ -12,7 +12,7 @@ const client = new Client({
     ]
 });
 
-client.on('Ready', (client) => {
+client.on('READY', (client) => {
     client.setPresence({
         activities: [{
             name: 'Gogecord',

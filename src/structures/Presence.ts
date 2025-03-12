@@ -24,7 +24,7 @@ export default class Presence {
     };
     public status: PresenceStatus;
 
-    constructor(data?: GatewayPresenceUpdateDispatchData) {
+    public constructor(data?: GatewayPresenceUpdateDispatchData) {
         this.activities = data?.activities
             ?.filter((activity) => {
                 ActivityTypes['Custom'] as number !== activity.type;
@@ -58,24 +58,24 @@ export default class Presence {
             desktop: (Object
                 .keys(PresenceStatuses)
                 .find((key) => {
-                    PresenceStatuses[key as PresenceStatus] as string === client?.desktop;
+                    return PresenceStatuses[key as PresenceStatus] as string === client?.desktop;
                 }) ?? 'Offline') as PresenceStatus,
             mobile: (Object
                 .keys(PresenceStatuses)
                 .find((key) => {
-                    PresenceStatuses[key as PresenceStatus] as string === client?.mobile;
+                    return PresenceStatuses[key as PresenceStatus] as string === client?.mobile;
                 }) ?? 'Offline') as PresenceStatus,
             web: (Object
                 .keys(PresenceStatuses)
                 .find((key) => {
-                    PresenceStatuses[key as PresenceStatus] as string === client?.web;
+                    return PresenceStatuses[key as PresenceStatus] as string === client?.web;
                 }) ?? 'Offline') as PresenceStatus
         };
 
         this.status = (Object
             .keys(PresenceStatuses)
             .find((key) => {
-                PresenceStatuses[key as PresenceStatus] as string === data?.status;
+                return PresenceStatuses[key as PresenceStatus] as string === data?.status;
             }) ?? 'Offline') as PresenceStatus;
     }
 }

@@ -16,7 +16,7 @@ class GuildBanManager {
     async add(userId, options) {
         try {
             return new GuildBan_1.default(this.guild, await this.guild.client.request({
-                method: 'put',
+                method: 'PUT',
                 path: v10_1.Routes.guildBan(this.guild.id, userId),
                 body: {
                     last_messages_days: options.days
@@ -31,7 +31,7 @@ class GuildBanManager {
     async remove(userId) {
         try {
             await this.guild.client.request({
-                method: 'delete',
+                method: 'DELETE',
                 path: v10_1.Routes.guildBan(this.guild.id, userId)
             });
         }

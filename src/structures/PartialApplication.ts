@@ -8,13 +8,13 @@ import Client from './Client';
 export default class PartialApplication {
     public emojis = new ApplicationEmojiManager(this);
 
-    constructor(private client: Client) {
+    public constructor(private client: Client) {
         Object.defineProperty(this, 'client', { enumerable: false });
     }
 
     public async fetch(): Promise<Application> {
         return new Application(this.client, await this.client.request({
-            method: 'get',
+            method: 'GET',
             path: Routes.currentApplication()
         }));
     }

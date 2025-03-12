@@ -88,7 +88,7 @@ export default class GatewayEvent<K extends keyof GatewayEventPayloads = keyof G
     public name: GatewayEventOptions<K>['name'];
     public run: GatewayEventOptions<K>['run'];
 
-    constructor(options: GatewayEventOptions<K>) {
+    public constructor(options: GatewayEventOptions<K>) {
         const { name, run } = options;
 
         this.name = name;

@@ -21,7 +21,7 @@ export default class TeamMember {
     public state: TeamMemberState;
     public user: User;
 
-    constructor(public client: Client, data: APITeamMember) {
+    public constructor(public client: Client, data: APITeamMember) {
         this.role = Object
             .keys(TeamMemberRoles)
             .find((key) => {

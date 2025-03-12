@@ -14,7 +14,7 @@ export default class Team {
 
     public members = new Collection<string, TeamMember>();
 
-    constructor(public client: Client, data: APITeam) {
+    public constructor(public client: Client, data: APITeam) {
         this.icon = data.icon || undefined;
         this.id = data.id;
 

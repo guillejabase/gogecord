@@ -14,7 +14,7 @@ class GuildMemberManager {
     }
     async deafen(memberId, reason) {
         await this.guild.client.request({
-            method: 'patch',
+            method: 'PATCH',
             path: v10_1.Routes.guildMember(this.guild.id, memberId),
             body: {
                 deaf: true
@@ -24,7 +24,7 @@ class GuildMemberManager {
     }
     async mute(memberId, reason) {
         await this.guild.client.request({
-            method: 'patch',
+            method: 'PATCH',
             path: v10_1.Routes.guildMember(this.guild.id, memberId),
             body: {
                 mute: true
@@ -34,14 +34,14 @@ class GuildMemberManager {
     }
     async kick(memberId, reason) {
         await this.guild.client.request({
-            method: 'delete',
+            method: 'DELETE',
             path: v10_1.Routes.guildMember(this.guild.id, memberId),
             reason
         });
     }
     async timeout(memberId, time = 60000, reason) {
         await this.guild.client.request({
-            method: 'patch',
+            method: 'PATCH',
             path: v10_1.Routes.guildMember(this.guild.id, memberId),
             body: {
                 communication_disabled_until: new Date(Date.now() + time).toISOString()
@@ -51,7 +51,7 @@ class GuildMemberManager {
     }
     async undeafen(memberId) {
         await this.guild.client.request({
-            method: 'patch',
+            method: 'PATCH',
             path: v10_1.Routes.guildMember(this.guild.id, memberId),
             body: {
                 deaf: false
@@ -60,7 +60,7 @@ class GuildMemberManager {
     }
     async unmute(memberId) {
         await this.guild.client.request({
-            method: 'patch',
+            method: 'PATCH',
             path: v10_1.Routes.guildMember(this.guild.id, memberId),
             body: {
                 mute: false
@@ -69,7 +69,7 @@ class GuildMemberManager {
     }
     async untimeout(memberId) {
         await this.guild.client.request({
-            method: 'patch',
+            method: 'PATCH',
             path: v10_1.Routes.guildMember(this.guild.id, memberId),
             body: {
                 communication_disabled_until: null

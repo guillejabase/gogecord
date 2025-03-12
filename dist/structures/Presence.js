@@ -79,23 +79,23 @@ class Presence {
             desktop: (Object
                 .keys(PresenceStatuses)
                 .find((key) => {
-                PresenceStatuses[key] === client?.desktop;
+                return PresenceStatuses[key] === client?.desktop;
             }) ?? 'Offline'),
             mobile: (Object
                 .keys(PresenceStatuses)
                 .find((key) => {
-                PresenceStatuses[key] === client?.mobile;
+                return PresenceStatuses[key] === client?.mobile;
             }) ?? 'Offline'),
             web: (Object
                 .keys(PresenceStatuses)
                 .find((key) => {
-                PresenceStatuses[key] === client?.web;
+                return PresenceStatuses[key] === client?.web;
             }) ?? 'Offline')
         };
         this.status = (Object
             .keys(PresenceStatuses)
             .find((key) => {
-            PresenceStatuses[key] === data?.status;
+            return PresenceStatuses[key] === data?.status;
         }) ?? 'Offline');
     }
 }

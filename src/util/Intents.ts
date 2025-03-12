@@ -1,4 +1,4 @@
-import BitField, { type BitFieldResolvable } from './BitField';
+import BitField from './BitField';
 
 export type Intent = keyof typeof Intents.bits;
 export type IntentsResolvable = Intent | number | bigint | IntentsResolvable[];
@@ -28,8 +28,8 @@ export default class Intents extends BitField {
         DirectMessagePolls: 33554432
     } as const;
 
-    constructor(...bits: IntentsResolvable[]) {
-        super(...bits as BitFieldResolvable[]);
+    public constructor(...bits: IntentsResolvable[]) {
+        super(...bits);
     }
 
     public has(bit: IntentsResolvable): boolean {

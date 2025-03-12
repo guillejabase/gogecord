@@ -1,4 +1,4 @@
-export type BitFieldResolvable = string | number | bigint | string[] | number[] | bigint[];
+export type BitFieldResolvable = string | number | bigint | BitFieldResolvable[];
 export default class BitField {
     static readonly bits: {
         [key: string]: number;

@@ -15,7 +15,7 @@ class PartialApplication {
     }
     async fetch() {
         return new Application_1.default(this.client, await this.client.request({
-            method: 'get',
+            method: 'GET',
             path: v10_1.Routes.currentApplication()
         }));
     }

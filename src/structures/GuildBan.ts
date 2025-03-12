@@ -7,7 +7,7 @@ export default class GuildBan {
     public reason?: string;
     public user: User;
 
-    constructor(public guild: Guild, data: APIBan) {
+    public constructor(public guild: Guild, data: APIBan) {
         this.reason = data.reason || undefined;
         this.user = new User(guild.client, data.user);
 

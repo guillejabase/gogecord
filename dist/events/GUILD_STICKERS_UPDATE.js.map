@@ -1,1 +1,1 @@
-{"version":3,"file":"GUILD_STICKERS_UPDATE.js","sourceRoot":"","sources":["../../src/events/GUILD_STICKERS_UPDATE.ts"],"names":[],"mappings":";;;;;AAAA,8EAAsD;AAEtD,kBAAe,IAAI,sBAAY,CAAC;IAC5B,IAAI,EAAE,uBAAuB;IAE7B,GAAG,EAAE,CAAC,MAAM,EAAE,IAAI,EAAE,EAAE;IACtB,CAAC;CACJ,CAAC,CAAC"}
+{"version":3,"file":"GUILD_STICKERS_UPDATE.js","sourceRoot":"","sources":["../../src/events/GUILD_STICKERS_UPDATE.ts"],"names":[],"mappings":";;;;;AAAA,8EAAsD;AAEtD,kBAAe,IAAI,sBAAY,CAAC;IAC5B,IAAI,EAAE,uBAAuB;IAE7B,GAAG,CAAC,MAAM,EAAE,IAAI;IAChB,CAAC;CACJ,CAAC,CAAC"}

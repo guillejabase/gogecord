@@ -6,10 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const GatewayEvent_1 = __importDefault(require("../structures/GatewayEvent"));
 exports.default = new GatewayEvent_1.default({
     name: 'GUILD_DELETE',
-    run: (client, data) => {
+    run(client, data) {
         const guild = client.guilds.cache.get(data.id);
         client.guilds.cache.delete(guild.id);
-        client.emit('GuildDelete', guild);
+        client.emit(this.name, guild);
     }
 });
 //# sourceMappingURL=GUILD_DELETE.js.map

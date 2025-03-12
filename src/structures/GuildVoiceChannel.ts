@@ -6,7 +6,7 @@ import GuildVoiceBasedChannel from './GuildVoiceBasedChannel';
 export default class GuildVoiceChannel extends GuildVoiceBasedChannel {
     public readonly type = 'GuildVoice';
 
-    constructor(guild: Guild, data: APIGuildVoiceChannel) {
+    public constructor(guild: Guild, data: APIGuildVoiceChannel) {
         super(guild, data);
     }
 }

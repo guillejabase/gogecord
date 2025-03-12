@@ -30,7 +30,7 @@ export default class GuildRole {
 
     public members = new Collection<string, GuildMember>();
 
-    constructor(public guild: Guild, data: APIRole) {
+    public constructor(public guild: Guild, data: APIRole) {
         this.color = {
             decimal: data.color,
             hex: data.color.toString(16).padStart(6, '0')

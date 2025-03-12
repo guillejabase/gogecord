@@ -4,7 +4,7 @@ import Presence from '../structures/Presence';
 export default new GatewayEvent({
     name: 'PRESENCE_UPDATE',
 
-    run: (client, data) => {
+    run(client, data) {
         const guild = client.guilds.cache.get(data.guild_id)!;
         const member = guild.members.cache.get(data.user.id)!;
         const oldPresence = member.presence;
@@ -14,6 +14,6 @@ export default new GatewayEvent({
         guild.members.cache.set(member.user.id, member);
         client.guilds.cache.set(guild.id, guild);
 
-        client.emit('PresenceUpdate', oldPresence, member.presence);
+        client.emit(this.name, oldPresence, member.presence);
     }
 });

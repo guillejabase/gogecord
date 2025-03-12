@@ -17,7 +17,7 @@ class GuildRoleManager {
     }
     async create(options, reason) {
         return new GuildRole_1.default(this.guild, await this.guild.client.request({
-            method: 'post',
+            method: 'POST',
             path: v10_1.Routes.guildRoles(this.guild.id),
             body: {
                 color: options.color || 0,
@@ -32,14 +32,14 @@ class GuildRoleManager {
     }
     async delete(roleId, reason) {
         await this.guild.client.request({
-            method: 'delete',
+            method: 'DELETE',
             path: v10_1.Routes.guildRole(this.guild.id, roleId),
             reason
         });
     }
     async edit(roleId, options, reason) {
         return new GuildRole_1.default(this.guild, await this.guild.client.request({
-            method: 'patch',
+            method: 'PATCH',
             path: v10_1.Routes.guildRole(this.guild.id, roleId),
             body: {
                 ...options,

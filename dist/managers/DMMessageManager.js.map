@@ -1,0 +1,1 @@
+{"version":3,"file":"DMMessageManager.js","sourceRoot":"","sources":["../../src/managers/DMMessageManager.ts"],"names":[],"mappings":";;;;;AAIA,oEAA4C;AAM5C,MAAqB,gBAAgB;IAGN;IAFpB,KAAK,GAAG,IAAI,oBAAU,EAAqB,CAAC;IAEnD,YAA2B,OAAuB;QAAvB,YAAO,GAAP,OAAO,CAAgB;QAC9C,MAAM,CAAC,cAAc,CAAC,IAAI,EAAE,SAAS,EAAE,EAAE,UAAU,EAAE,KAAK,EAAE,CAAC,CAAC;IAClE,CAAC;CACJ;AAND,mCAMC"}

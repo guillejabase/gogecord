@@ -22,7 +22,7 @@ var ChannelTypes;
     ChannelTypes[ChannelTypes["GuildForum"] = 15] = "GuildForum";
     ChannelTypes[ChannelTypes["GuildMedia"] = 16] = "GuildMedia";
 })(ChannelTypes || (exports.ChannelTypes = ChannelTypes = {}));
-class Channel {
+class BasedChannel {
     client;
     created;
     flags;
@@ -40,7 +40,7 @@ class Channel {
         this.type = Object
             .keys(ChannelTypes)
             .find((key) => {
-            ChannelTypes[key] === data.type;
+            return ChannelTypes[key] === data.type;
         });
         Object.defineProperty(this, 'client', { enumerable: false });
     }
@@ -48,5 +48,5 @@ class Channel {
         return `<#${this.id}>`;
     }
 }
-exports.default = Channel;
-//# sourceMappingURL=Channel.js.map
+exports.default = BasedChannel;
+//# sourceMappingURL=BasedChannel.js.map

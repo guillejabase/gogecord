@@ -14,14 +14,14 @@ class GuildMemberRoleManager {
     }
     async add(roleId, reason) {
         await this.member.guild.client.request({
-            method: 'put',
+            method: 'PUT',
             path: v10_1.Routes.guildMemberRole(this.member.guild.id, this.member.user.id, roleId),
             reason
         });
     }
     async remove(roleId, reason) {
         await this.member.guild.client.request({
-            method: 'delete',
+            method: 'DELETE',
             path: v10_1.Routes.guildMemberRole(this.member.guild.id, this.member.user.id, roleId),
             reason
         });

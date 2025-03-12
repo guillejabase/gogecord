@@ -7,8 +7,8 @@ const GatewayEvent_1 = __importDefault(require("../structures/GatewayEvent"));
 const User_1 = __importDefault(require("../structures/User"));
 exports.default = new GatewayEvent_1.default({
     name: 'USER_UPDATE',
-    run: (client, data) => {
-        client.emit('UserUpdate', client.users.cache.get(data.id), new User_1.default(client, data));
+    run(client, data) {
+        client.emit(this.name, client.users.cache.get(data.id), new User_1.default(client, data));
     }
 });
 //# sourceMappingURL=USER_UPDATE.js.map

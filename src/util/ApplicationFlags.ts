@@ -1,4 +1,4 @@
-import BitField, { type BitFieldResolvable } from './BitField';
+import BitField from './BitField';
 
 export type ApplicationFlag = keyof typeof ApplicationFlags.bits;
 export type ApplicationFlagsResolvable = ApplicationFlag | number | bigint | ApplicationFlagsResolvable[];
@@ -23,8 +23,8 @@ export default class ApplicationFlags extends BitField {
         ApplicationCommandBadge: 8388608
     } as const;
 
-    constructor(...bits: ApplicationFlagsResolvable[]) {
-        super(...bits as BitFieldResolvable[]);
+    public constructor(...bits: ApplicationFlagsResolvable[]) {
+        super(...bits);
     }
 
     public has(bit: ApplicationFlagsResolvable): boolean {

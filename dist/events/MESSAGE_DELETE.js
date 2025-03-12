@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const GatewayEvent_1 = __importDefault(require("../structures/GatewayEvent"));
 exports.default = new GatewayEvent_1.default({
     name: 'MESSAGE_DELETE',
-    run: (client, data) => {
+    run(client, data) {
     }
 });
 //# sourceMappingURL=MESSAGE_DELETE.js.map

@@ -1,7 +1,6 @@
 import type { APISticker } from 'discord-api-types/v10';
 
 import Client from './Client';
-import User from './User';
 
 export enum StickerFormatTypes {
     PNG = 1,
@@ -25,20 +24,20 @@ export default class Sticker {
     public name: string;
     public type: StickerType;
 
-    constructor(public client: Client, data: APISticker) {
+    public constructor(public client: Client, data: APISticker) {
         this.available = !!data.available;
         this.description = data.description || undefined;
         this.formatType = Object
             .keys(StickerFormatTypes)
             .find((key) => {
-                StickerFormatTypes[key as StickerFormatType] as number === data.format_type;
+                return StickerFormatTypes[key as StickerFormatType] as number === data.format_type;
             }) as StickerFormatType;
         this.id = data.id;
         this.name = data.name;
         this.type = Object
             .keys(StickerTypes)
             .find((key) => {
-                StickerTypes[key as StickerType] as number === data.type;
+                return StickerTypes[key as StickerType] as number === data.type;
             }) as StickerType;
 
         Object.defineProperty(this, 'client', { enumerable: false });

@@ -1,4 +1,4 @@
-import BitField, { type BitFieldResolvable } from './BitField';
+import BitField from './BitField';
 
 export type GuildRoleFlag = keyof typeof GuildRoleFlags.bits;
 export type GuildRoleFlagsResolvable = GuildRoleFlag | number | bigint | GuildRoleFlagsResolvable[];
@@ -8,8 +8,8 @@ export default class GuildRoleFlags extends BitField {
         InPrompt: 1
     } as const;
 
-    constructor(...bits: GuildRoleFlagsResolvable[]) {
-        super(...bits as BitFieldResolvable[]);
+    public constructor(...bits: GuildRoleFlagsResolvable[]) {
+        super(...bits);
     }
 
     public has(bit: GuildRoleFlagsResolvable): boolean {

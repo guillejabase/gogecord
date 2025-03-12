@@ -11,7 +11,7 @@ export default class Emoji {
     public name: string;
     public user: User;
 
-    constructor(public client: Client, data: APIEmoji) {
+    public constructor(public client: Client, data: APIEmoji) {
         this.animated = !!data.animated;
         this.available = !!data.available;
         this.id = data.id!;

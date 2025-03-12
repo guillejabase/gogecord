@@ -15,7 +15,7 @@ class UserManager {
     }
     async fetch(userId) {
         return new User_1.default(this.client, await this.client.request({
-            method: 'get',
+            method: 'GET',
             path: v10_1.Routes.user(userId)
         }));
     }

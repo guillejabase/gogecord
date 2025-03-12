@@ -11,18 +11,22 @@ class Emitter {
         });
     }
     off(event, listener) {
-        if (this.listeners[event]) {
-            this.listeners[event] = this.listeners[event].filter((listening) => {
-                listener !== listening;
+        let emitterListener = this.listeners[event];
+        if (emitterListener) {
+            emitterListener = emitterListener.filter((listening) => {
+                return listener !== listening;
             });
         }
+        this.listeners[event] = emitterListener;
         return this;
     }
     on(event, listener) {
-        if (!this.listeners[event]) {
-            this.listeners[event] = [];
+        let emitterListener = this.listeners[event];
+        if (!emitterListener) {
+            emitterListener = [];
         }
-        this.listeners[event].push(listener);
+        emitterListener.push(listener);
+        this.listeners[event] = emitterListener;
         return this;
     }
 }

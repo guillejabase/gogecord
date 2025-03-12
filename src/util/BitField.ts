@@ -1,4 +1,4 @@
-export type BitFieldResolvable = string | number | bigint | string[] | number[] | bigint[];
+export type BitFieldResolvable = string | number | bigint | BitFieldResolvable[];
 
 export default class BitField {
     public static readonly bits: {
@@ -6,8 +6,10 @@ export default class BitField {
     };
     public bitField = 0;
 
-    constructor(...bits: BitFieldResolvable[]) {
-        this.bitField = (bits as number[]).reduce((previous, current) => previous + this.function.resolve(current), 0);
+    public constructor(...bits: BitFieldResolvable[]) {
+        this.bitField = (bits as number[]).reduce((previous, current) => {
+            return previous + this.function.resolve(current);
+        }, 0);
     }
 
     private get function(): typeof BitField {
@@ -26,14 +28,18 @@ export default class BitField {
             }
 
             return bit;
-        } else if (typeof bit == 'string') {
+        }
+        if (typeof bit == 'string') {
             if (!(bit in this.bits)) {
                 throw new Error(`Invalid bit field flag: ${bit}`);
             }
 
             return this.bits[bit];
-        } else if (Array.isArray(bit)) {
-            return (bit as any[]).reduce((previous, current) => this.resolve(current) + previous, 0);
+        }
+        if (Array.isArray(bit)) {
+            return (bit as any[]).reduce((previous, current) => {
+                return this.resolve(current) + previous;
+            }, 0);
         }
 
         throw new Error(`Invalid bit field flag type ${typeof bit}`);
@@ -41,11 +47,13 @@ export default class BitField {
     public has(bit: any): boolean {
         const resolved = this.function.resolve(bit);
 
-        return (this.bitField & resolved) == resolved;
+        return (this.bitField & resolved) === resolved;
     }
     public toArray(): string[] {
         return Object
             .keys(this.function.bits)
-            .filter((bit) => this.has(bit));
+            .filter((bit) => {
+                return this.has(bit);
+            });
     }
 }

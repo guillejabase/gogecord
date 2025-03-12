@@ -7,7 +7,7 @@ export default class Emitter<E extends Record<string, any[]> = Events> {
         [K in keyof E]?: EmitterListener<E[K]>[];
     } = {};
 
-    constructor() {
+    public constructor() {
         Object.defineProperty(this, 'listeners', { enumerable: false });
     }
 
@@ -17,20 +17,28 @@ export default class Emitter<E extends Record<string, any[]> = Events> {
         });
     }
     public off<K extends keyof E>(event: K, listener: EmitterListener<E[K]>): this {
-        if (this.listeners[event]) {
-            this.listeners[event] = this.listeners[event]!.filter((listening) => {
-                listener !== listening;
+        let emitterListener = this.listeners[event];
+
+        if (emitterListener) {
+            emitterListener = emitterListener.filter((listening) => {
+                return listener !== listening;
             });
         }
+        
+        this.listeners[event] = emitterListener;
 
         return this;
     }
     public on<K extends keyof E>(event: K, listener: EmitterListener<E[K]>): this {
-        if (!this.listeners[event]) {
-            this.listeners[event] = [];
+        let emitterListener = this.listeners[event];
+
+        if (!emitterListener) {
+            emitterListener = [];
         }
 
-        this.listeners[event]!.push(listener);
+        emitterListener.push(listener);
+
+        this.listeners[event] = emitterListener;
 
         return this;
     }

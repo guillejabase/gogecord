@@ -1,1 +1,1 @@
-{"version":3,"file":"GUILD_UPDATE.js","sourceRoot":"","sources":["../../src/events/GUILD_UPDATE.ts"],"names":[],"mappings":";;;;;AAAA,8EAAsD;AAEtD,kBAAe,IAAI,sBAAY,CAAC;IAC5B,IAAI,EAAE,cAAc;IAEpB,GAAG,EAAE,CAAC,MAAM,EAAE,IAAI,EAAE,EAAE;IACtB,CAAC;CACJ,CAAC,CAAC"}
+{"version":3,"file":"GUILD_UPDATE.js","sourceRoot":"","sources":["../../src/events/GUILD_UPDATE.ts"],"names":[],"mappings":";;;;;AAAA,8EAAsD;AAEtD,kBAAe,IAAI,sBAAY,CAAC;IAC5B,IAAI,EAAE,cAAc;IAEpB,GAAG,CAAC,MAAM,EAAE,IAAI;IAChB,CAAC;CACJ,CAAC,CAAC"}

@@ -177,8 +177,12 @@ class Guild {
             return GuildNSFWLevels[key] === data.nsfw_level;
         });
         const length = Math.max(...data.roles
-            .filter((roleData) => roleData.id !== this.id)
-            .map((roleData) => roleData.position));
+            .filter((roleData) => {
+            return roleData.id !== this.id;
+        })
+            .map((roleData) => {
+            return roleData.position;
+        }));
         for (const apiRole of data.roles.filter((roleData) => roleData.id === this.id).sort()) {
             new GuildRole_1.default(this, {
                 ...apiRole,
@@ -186,14 +190,18 @@ class Guild {
             });
         }
         this.roles.everyone = new GuildRole_1.default(this, {
-            ...data.roles.find((roleData) => roleData.id === this.id),
+            ...data.roles.find((roleData) => {
+                return roleData.id === this.id;
+            }),
             position: data.roles.length
         });
         if ('members' in data) {
             for (const apiMember of data.members) {
                 const member = new GuildMember_1.default(this, {
                     ...apiMember,
-                    presence: new Presence_1.default(data.presences.find((apiPresence) => apiMember.user.id === apiPresence.user.id))
+                    presence: new Presence_1.default(data.presences.find((apiPresence) => {
+                        return apiMember.user.id === apiPresence.user.id;
+                    }))
                 });
                 this.roles.cache.forEach((role) => {
                     if (!member.roles.cache.has(role.id)) {

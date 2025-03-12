@@ -8,13 +8,13 @@ import Collection from '../util/Collection';
 export default class UserManager {
     public cache = new Collection<string, User>();
 
-    constructor(private client: Client) {
+    public constructor(private client: Client) {
         Object.defineProperty(this, 'client', { enumerable: false });
     }
 
     public async fetch(userId: string): Promise<User> {
         return new User(this.client, await this.client.request({
-            method: 'get',
+            method: 'GET',
             path: Routes.user(userId)
         }));
     }

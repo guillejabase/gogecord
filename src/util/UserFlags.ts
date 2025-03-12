@@ -1,4 +1,4 @@
-import BitField, { type BitFieldResolvable } from './BitField';
+import BitField from './BitField';
 
 export type UserFlag = keyof typeof UserFlags.bits;
 export type UserFlagsResolvable = UserFlag | number | bigint | UserFlagsResolvable[];
@@ -22,8 +22,8 @@ export default class UserFlags extends BitField {
         ActiveDeveloper: 4194304
     } as const;
 
-    constructor(...bits: UserFlagsResolvable[]) {
-        super(...bits as BitFieldResolvable[]);
+    public constructor(...bits: UserFlagsResolvable[]) {
+        super(...bits);
     }
 
     public has(bit: UserFlagsResolvable): boolean {

@@ -1,4 +1,4 @@
-import BitField, { type BitFieldResolvable } from './BitField';
+import BitField from './BitField';
 
 export type GuildMemberFlag = keyof typeof GuildMemberFlags.bits;
 export type GuildMemberFlagsResolvable = GuildMemberFlag | number | bigint | GuildMemberFlagsResolvable[];
@@ -16,8 +16,8 @@ export default class GuildMemberFlags extends BitField {
         DMSettingsUpsellAcknowledged: 512
     } as const;
 
-    constructor(...bits: GuildMemberFlagsResolvable[]) {
-        super(...bits as BitFieldResolvable[]);
+    public constructor(...bits: GuildMemberFlagsResolvable[]) {
+        super(...bits);
     }
 
     public has(bit: GuildMemberFlagsResolvable): boolean {

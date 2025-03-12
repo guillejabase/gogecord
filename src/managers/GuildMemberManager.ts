@@ -8,13 +8,13 @@ import Collection from '../util/Collection';
 export default class GuildMemberManager {
     public cache = new Collection<string, GuildMember>();
 
-    constructor(private guild: Guild) {
+    public constructor(private guild: Guild) {
         Object.defineProperty(this, 'guild', { enumerable: false });
     }
 
     public async deafen(memberId: string, reason?: string): Promise<void> {
         await this.guild.client.request({
-            method: 'patch',
+            method: 'PATCH',
             path: Routes.guildMember(this.guild.id, memberId),
             body: {
                 deaf: true
@@ -24,7 +24,7 @@ export default class GuildMemberManager {
     }
     public async mute(memberId: string, reason?: string): Promise<void> {
         await this.guild.client.request({
-            method: 'patch',
+            method: 'PATCH',
             path: Routes.guildMember(this.guild.id, memberId),
             body: {
                 mute: true
@@ -34,14 +34,14 @@ export default class GuildMemberManager {
     }
     public async kick(memberId: string, reason?: string): Promise<void> {
         await this.guild.client.request({
-            method: 'delete',
+            method: 'DELETE',
             path: Routes.guildMember(this.guild.id, memberId),
             reason
         });
     }
     public async timeout(memberId: string, time: number = 60000, reason?: string): Promise<void> {
         await this.guild.client.request({
-            method: 'patch',
+            method: 'PATCH',
             path: Routes.guildMember(this.guild.id, memberId),
             body: {
                 communication_disabled_until: new Date(Date.now() + time).toISOString()
@@ -51,7 +51,7 @@ export default class GuildMemberManager {
     }
     public async undeafen(memberId: string): Promise<void> {
         await this.guild.client.request({
-            method: 'patch',
+            method: 'PATCH',
             path: Routes.guildMember(this.guild.id, memberId),
             body: {
                 deaf: false
@@ -60,7 +60,7 @@ export default class GuildMemberManager {
     }
     public async unmute(memberId: string): Promise<void> {
         await this.guild.client.request({
-            method: 'patch',
+            method: 'PATCH',
             path: Routes.guildMember(this.guild.id, memberId),
             body: {
                 mute: false
@@ -69,7 +69,7 @@ export default class GuildMemberManager {
     }
     public async untimeout(memberId: string): Promise<void> {
         await this.guild.client.request({
-            method: 'patch',
+            method: 'PATCH',
             path: Routes.guildMember(this.guild.id, memberId),
             body: {
                 communication_disabled_until: null

@@ -1,1 +1,1 @@
-{"version":3,"file":"GUILD_BAN_ADD.js","sourceRoot":"","sources":["../../src/events/GUILD_BAN_ADD.ts"],"names":[],"mappings":";;;;;AAAA,8EAAsD;AAEtD,kBAAe,IAAI,sBAAY,CAAC;IAC5B,IAAI,EAAE,eAAe;IAErB,GAAG,EAAE,CAAC,MAAM,EAAE,IAAI,EAAE,EAAE;IACtB,CAAC;CACJ,CAAC,CAAC"}
+{"version":3,"file":"GUILD_BAN_ADD.js","sourceRoot":"","sources":["../../src/events/GUILD_BAN_ADD.ts"],"names":[],"mappings":";;;;;AAAA,8EAAsD;AAEtD,kBAAe,IAAI,sBAAY,CAAC;IAC5B,IAAI,EAAE,eAAe;IAErB,GAAG,CAAC,MAAM,EAAE,IAAI;IAChB,CAAC;CACJ,CAAC,CAAC"}

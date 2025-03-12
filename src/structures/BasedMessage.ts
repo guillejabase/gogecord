@@ -1,17 +1,21 @@
 import type { GatewayMessageCreateDispatchData, GatewayMessageUpdateDispatchData } from 'discord-api-types/v10';
 
-import type { MessageOptions } from '../managers/MessageManager';
-
 import Client from './Client';
-import GuildTextBasedChannel from './GuildTextBasedChannel';
-import User from './User';
+import DMMessage from './DMMessage';
+import GuildMessage from './GuildMessage';
 
+import Embed from '../util/Embed';
 import MessageFlags from '../util/MessageFlags';
-import DMChannel from './DMChannel';
 
-export default class Message {
-    public author: User;
-    // public channel: any;
+export type Message = DMMessage | GuildMessage;
+export type MessageOptions = {
+    content?: string;
+    embeds?: Embed[];
+    mentions?: boolean;
+    reference?: string;
+};
+
+export default class BasedMessage {
     public content: string;
     public created: {
         at: Date;
@@ -24,9 +28,7 @@ export default class Message {
     public flags: MessageFlags;
     public id: string;
 
-    constructor(public client: Client, data: GatewayMessageCreateDispatchData | GatewayMessageUpdateDispatchData) {
-        this.author = client.users.cache.get(data.author.id)!;
-        // this.channel = client.channels.cache.get(data.channel_id)! as DMChannel | GuildTextBasedChannel;
+    public constructor(public client: Client, data: GatewayMessageCreateDispatchData | GatewayMessageUpdateDispatchData) {
         this.content = data.content;
 
         const created = Date.parse(data.timestamp);
@@ -46,11 +48,4 @@ export default class Message {
 
         Object.defineProperty(this, 'client', { enumerable: false });
     }
-
-    // public async reply(options: Omit<MessageOptions, 'reference'>): Promise<Message> {
-    //     return await this.channel.messages.send({
-    //         ...options,
-    //         reference: this.id
-    //     });
-    // }
 }

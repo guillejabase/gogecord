@@ -1,6 +1,15 @@
 import type { APIChannel } from 'discord-api-types/v10';
 
 import Client from './Client';
+import DMChannel from '../structures/DMChannel';
+import GroupDMChannel from './GroupDMChannel';
+import GuildAnnouncementChannel from '../structures/GuildAnnouncementChannel';
+import GuildCategoryChanel from '../structures/GuildCategoryChannel';
+import GuildForumChannel from '../structures/GuildForumChannel';
+import GuildMediaChannel from '../structures/GuildMediaChannel';
+import GuildStageVoiceChannel from '../structures/GuildStageVoiceChannel';
+import GuildTextChannel from '../structures/GuildTextChannel';
+import GuildVoiceChannel from '../structures/GuildVoiceChannel';
 
 import ChannelFlags from '../util/ChannelFlags';
 import Snowflake from '../util/Snowflake';
@@ -21,9 +30,19 @@ export enum ChannelTypes {
     GuildMedia = 16
 }
 
+export type Channel =
+    | DMChannel
+    | GroupDMChannel
+    | GuildAnnouncementChannel
+    | GuildCategoryChanel
+    | GuildForumChannel
+    | GuildMediaChannel
+    | GuildStageVoiceChannel
+    | GuildTextChannel
+    | GuildVoiceChannel;
 export type ChannelType = keyof typeof ChannelTypes;
 
-export default class Channel {
+export default class BasedChannel {
     public created: {
         at: Date;
         timestamp: number;
@@ -32,7 +51,7 @@ export default class Channel {
     public id: string;
     public readonly type: ChannelType;
 
-    constructor(public client: Client, data: APIChannel) {
+    public constructor(public client: Client, data: APIChannel) {
         this.id = data.id;
 
         const created = new Snowflake(data.id).timestamp;
@@ -45,7 +64,7 @@ export default class Channel {
         this.type = Object
             .keys(ChannelTypes)
             .find((key) => {
-                ChannelTypes[key as ChannelType] as number === data.type;
+                return ChannelTypes[key as ChannelType] as number === data.type;
             }) as ChannelType;
 
         Object.defineProperty(this, 'client', { enumerable: false });

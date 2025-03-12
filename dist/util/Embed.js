@@ -22,8 +22,9 @@ class Embed {
     }
     setColor(color) {
         if (typeof color == 'string') {
-            if (color.startsWith('#'))
+            if (color.startsWith('#')) {
                 color = color.slice(1);
+            }
             this.color = parseInt(color, 16);
         }
         else {

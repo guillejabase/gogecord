@@ -27,7 +27,7 @@ export default class Activity {
     public type: ActivityType;
     public url?: string;
 
-    constructor(data: GatewayActivity) {
+    public constructor(data: GatewayActivity) {
         this.created = {
             at: new Date(data.created_at),
             timestamp: data.created_at

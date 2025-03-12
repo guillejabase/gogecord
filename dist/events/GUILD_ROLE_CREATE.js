@@ -7,8 +7,8 @@ const GatewayEvent_1 = __importDefault(require("../structures/GatewayEvent"));
 const GuildRole_1 = __importDefault(require("../structures/GuildRole"));
 exports.default = new GatewayEvent_1.default({
     name: 'GUILD_ROLE_CREATE',
-    run: (client, data) => {
-        client.emit('GuildRoleCreate', new GuildRole_1.default(client.guilds.cache.get(data.guild_id), data.role));
+    run(client, data) {
+        client.emit(this.name, new GuildRole_1.default(client.guilds.cache.get(data.guild_id), data.role));
     }
 });
 //# sourceMappingURL=GUILD_ROLE_CREATE.js.map

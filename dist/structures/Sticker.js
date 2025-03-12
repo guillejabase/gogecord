@@ -28,14 +28,14 @@ class Sticker {
         this.formatType = Object
             .keys(StickerFormatTypes)
             .find((key) => {
-            StickerFormatTypes[key] === data.format_type;
+            return StickerFormatTypes[key] === data.format_type;
         });
         this.id = data.id;
         this.name = data.name;
         this.type = Object
             .keys(StickerTypes)
             .find((key) => {
-            StickerTypes[key] === data.type;
+            return StickerTypes[key] === data.type;
         });
         Object.defineProperty(this, 'client', { enumerable: false });
     }

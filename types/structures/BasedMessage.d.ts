@@ -1,10 +1,18 @@
 import type { GatewayMessageCreateDispatchData, GatewayMessageUpdateDispatchData } from 'discord-api-types/v10';
 import Client from './Client';
-import User from './User';
+import DMMessage from './DMMessage';
+import GuildMessage from './GuildMessage';
+import Embed from '../util/Embed';
 import MessageFlags from '../util/MessageFlags';
-export default class Message {
+export type Message = DMMessage | GuildMessage;
+export type MessageOptions = {
+    content?: string;
+    embeds?: Embed[];
+    mentions?: boolean;
+    reference?: string;
+};
+export default class BasedMessage {
     client: Client;
-    author: User;
     content: string;
     created: {
         at: Date;
@@ -18,4 +26,4 @@ export default class Message {
     id: string;
     constructor(client: Client, data: GatewayMessageCreateDispatchData | GatewayMessageUpdateDispatchData);
 }
-//# sourceMappingURL=Message.d.ts.map
+//# sourceMappingURL=BasedMessage.d.ts.map

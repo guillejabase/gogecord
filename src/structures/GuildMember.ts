@@ -49,7 +49,7 @@ export default class GuildMember {
 
     public roles = new GuildMemberRoleManager(this);
 
-    constructor(public guild: Guild, data: APIFullGuildMember) {
+    public constructor(public guild: Guild, data: APIFullGuildMember) {
         this.avatar = data.avatar || undefined;
 
         const boosting = Date.parse(data.premium_since!);

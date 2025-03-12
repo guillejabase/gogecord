@@ -19,7 +19,7 @@ export default class GuildRoleManager {
 
     public cache = new Collection<string, GuildRole>();
 
-    constructor(private guild: Guild) {
+    public constructor(private guild: Guild) {
         Object.defineProperty(this, 'guild', { enumerable: false });
     }
 
@@ -27,7 +27,7 @@ export default class GuildRoleManager {
         name: string;
     }, reason?: string): Promise<GuildRole> {
         return new GuildRole(this.guild, await this.guild.client.request({
-            method: 'post',
+            method: 'POST',
             path: Routes.guildRoles(this.guild.id),
             body: {
                 color: options.color || 0,
@@ -42,7 +42,7 @@ export default class GuildRoleManager {
     }
     public async delete(roleId: string, reason?: string): Promise<void> {
         await this.guild.client.request({
-            method: 'delete',
+            method: 'DELETE',
             path: Routes.guildRole(this.guild.id, roleId),
             reason
         });
@@ -51,7 +51,7 @@ export default class GuildRoleManager {
         name?: string;
     }, reason?: string): Promise<GuildRole> {
         return new GuildRole(this.guild, await this.guild.client.request({
-            method: 'patch',
+            method: 'PATCH',
             path: Routes.guildRole(this.guild.id, roleId),
             body: {
                 ...options,

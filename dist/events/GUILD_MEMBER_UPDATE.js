@@ -7,10 +7,10 @@ const GatewayEvent_1 = __importDefault(require("../structures/GatewayEvent"));
 const GuildMember_1 = __importDefault(require("../structures/GuildMember"));
 exports.default = new GatewayEvent_1.default({
     name: 'GUILD_MEMBER_UPDATE',
-    run: (client, data) => {
+    run(client, data) {
         const guild = client.guilds.cache.get(data.guild_id);
         const oldMember = guild.members.cache.get(data.user.id);
-        client.emit('GuildMemberUpdate', oldMember, new GuildMember_1.default(guild, {
+        client.emit(this.name, oldMember, new GuildMember_1.default(guild, {
             ...data,
             presence: oldMember.presence
         }));

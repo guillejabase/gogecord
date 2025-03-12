@@ -8,7 +8,7 @@ import Collection from '../util/Collection';
 export default class GuildBanManager {
     public cache = new Collection<string, GuildBan>();
 
-    constructor(private guild: Guild) {
+    public constructor(private guild: Guild) {
         Object.defineProperty(this, 'guild', { enumerable: false });
     }
 
@@ -18,7 +18,7 @@ export default class GuildBanManager {
     }): Promise<GuildBan> {
         try {
             return new GuildBan(this.guild, await this.guild.client.request({
-                method: 'put',
+                method: 'PUT',
                 path: Routes.guildBan(this.guild.id, userId),
                 body: {
                     last_messages_days: options.days
@@ -32,7 +32,7 @@ export default class GuildBanManager {
     public async remove(userId: string): Promise<void> {
         try {
             await this.guild.client.request({
-                method: 'delete',
+                method: 'DELETE',
                 path: Routes.guildBan(this.guild.id, userId)
             });
         } catch (error: any) {

@@ -1,4 +1,4 @@
-import BitField, { type BitFieldResolvable } from './BitField';
+import BitField from './BitField';
 
 export type MessageFlag = keyof typeof MessageFlags.bits;
 export type MessageFlagsResolvable = MessageFlag | number | bigint | MessageFlagsResolvable[];
@@ -18,8 +18,8 @@ export default class MessageFlags extends BitField {
         IsVoiceMessage: 8192
     } as const;
 
-    constructor(...bits: MessageFlagsResolvable[]) {
-        super(...bits as BitFieldResolvable[]);
+    public constructor(...bits: MessageFlagsResolvable[]) {
+        super(...bits);
     }
 
     public has(bit: MessageFlagsResolvable): boolean {

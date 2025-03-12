@@ -13,7 +13,7 @@ export type ClientOptions = {
     mentions?: boolean;
 };
 export type ClientRequestOptions = {
-    method: 'delete' | 'get' | 'patch' | 'post' | 'put';
+    method: 'DELETE' | 'GET' | 'PATCH' | 'POST' | 'PUT';
     path: string;
     body?: object;
     reason?: string;
@@ -42,7 +42,7 @@ export default class Client extends Emitter {
             url?: string;
         }[];
         afk: boolean;
-        status: Exclude<PresenceStatus, 'offline'>;
+        status: Exclude<PresenceStatus, 'Offline'>;
     };
     ready: {
         at: Date;

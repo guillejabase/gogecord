@@ -19,7 +19,7 @@ export type ClientOptions = {
     mentions?: boolean;
 };
 export type ClientRequestOptions = {
-    method: 'delete' | 'get' | 'patch' | 'post' | 'put';
+    method: 'DELETE' | 'GET' | 'PATCH' | 'POST' | 'PUT';
     path: string;
     body?: object;
     reason?: string;
@@ -53,7 +53,7 @@ export default class Client extends Emitter {
             url?: string;
         }[];
         afk: boolean;
-        status: Exclude<PresenceStatus, 'offline'>;
+        status: Exclude<PresenceStatus, 'Offline'>;
     };
     public ready!: {
         at: Date;
@@ -118,7 +118,7 @@ export default class Client extends Emitter {
                 options.resolve(await this.processRequest(options));
             } catch (error: any) {
                 if (error.status === 429) {
-                    this.retryAfter = Date.now() + error.headers['retry-after'] * 1000;
+                    this.retryAfter = Date.now() + error.headers['Retry-After'] * 1000;
                     this.requestQueue.unshift(options);
                 } else {
                     options.reject(error);
@@ -160,24 +160,22 @@ export default class Client extends Emitter {
         this.token = token;
 
         try {
-            const data: APIGatewayInfo = await this.request({
-                method: 'get',
+            this.webSocket = new WebSocket((await this.request({
+                method: 'GET',
                 path: '/gateway/bot'
-            });
-
-            this.webSocket = new WebSocket(data.url);
+            }) as APIGatewayInfo).url);
 
             this.webSocket.on('open', () => {
                 this.webSocket.send(JSON.stringify({
                     op: 2,
                     d: {
                         intents: this.intents.bitField,
-                        token: this.token,
                         properties: {
                             os: 'windows',
                             browser: 'chrome',
                             device: 'chrome'
-                        }
+                        },
+                        token: this.token
                     }
                 }));
             });
@@ -196,7 +194,7 @@ export default class Client extends Emitter {
                     return;
                 }
 
-                const event: GatewayEvent = require(`../events/${payload.t}`).default;
+                const event: GatewayEvent = (await import(`../events/${payload.t}`)).default;
 
                 if (event.name != payload.t) {
                     return;

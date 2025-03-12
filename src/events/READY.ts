@@ -4,7 +4,7 @@ import User from '../structures/User';
 export default new GatewayEvent({
     name: 'READY',
 
-    run: (client, data) => {
+    run(client, data) {
         client.user = new User(client, data.user);
 
         const ready = Date.now();
@@ -13,6 +13,6 @@ export default new GatewayEvent({
             timestamp: ready
         };
 
-        client.emit('Ready', client);
+        client.emit(this.name, client);
     }
 });

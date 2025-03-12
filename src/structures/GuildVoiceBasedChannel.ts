@@ -8,7 +8,7 @@ type APIGuildVoiceBasedChannel =
     | Types.APIGuildVoiceChannel;
 
 export default class GuildVoiceBasedChannel extends GuildTextBasedChannel {
-    constructor(guild: Guild, data: APIGuildVoiceBasedChannel) {
+    public constructor(guild: Guild, data: APIGuildVoiceBasedChannel) {
         super(guild, data);
     }
 }

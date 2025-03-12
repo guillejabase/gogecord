@@ -20,7 +20,7 @@ export default class User {
     public system: boolean;
     public username: string;
 
-    constructor(public client: Client, data: APIUser) {
+    public constructor(public client: Client, data: APIUser) {
         this.avatar = data.avatar || undefined;
         this.bot = !!data.bot;
         this.id = data.id;

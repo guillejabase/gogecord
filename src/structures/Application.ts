@@ -16,7 +16,7 @@ export default class Application extends PartialApplication {
     public owner?: User;
     public team?: Team;
 
-    constructor(client: Client, data: APIApplication) {
+    public constructor(client: Client, data: APIApplication) {
         super(client);
 
         this.public = data.bot_public;

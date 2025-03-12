@@ -152,7 +152,7 @@ export default class Guild {
     public roles = new GuildRoleManager(this);
     public stickers = new GuildStickerManager(this);
 
-    constructor(public client: Client, data: GatewayGuildCreateDispatchData | GatewayGuildUpdateDispatchData) {
+    public constructor(public client: Client, data: GatewayGuildCreateDispatchData | GatewayGuildUpdateDispatchData) {
         this.banner = data.banner || undefined;
         this.id = data.id;
 
@@ -196,8 +196,12 @@ export default class Guild {
 
         const length = Math.max(
             ...data.roles
-                .filter((roleData) => roleData.id !== this.id)
-                .map((roleData) => roleData.position)
+                .filter((roleData) => {
+                    return roleData.id !== this.id;
+                })
+                .map((roleData) => {
+                    return roleData.position;
+                })
         );
 
         for (const apiRole of data.roles.filter((roleData) => roleData.id === this.id).sort()) {
@@ -208,7 +212,9 @@ export default class Guild {
         }
 
         this.roles.everyone = new GuildRole(this, {
-            ...data.roles.find((roleData) => roleData.id === this.id)!,
+            ...data.roles.find((roleData) => {
+                return roleData.id === this.id;
+            })!,
             position: data.roles.length
         });
 
@@ -216,7 +222,9 @@ export default class Guild {
             for (const apiMember of data.members) {
                 const member = new GuildMember(this, {
                     ...apiMember,
-                    presence: new Presence(data.presences.find((apiPresence) => apiMember.user.id === apiPresence.user.id))
+                    presence: new Presence(data.presences.find((apiPresence) => {
+                        return apiMember.user.id === apiPresence.user.id;
+                    }))
                 });
 
                 this.roles.cache.forEach((role) => {

@@ -1,4 +1,4 @@
-import BitField, { type BitFieldResolvable } from './BitField';
+import BitField from './BitField';
 
 export type Permission = keyof typeof Permissions.bits;
 export type PermissionsResolvable = Permission | number | bigint | PermissionsResolvable[];
@@ -56,8 +56,8 @@ export default class Permissions extends BitField {
         UseExternalApps: 1125899906842624
     } as const;
 
-    constructor(...bits: PermissionsResolvable[]) {
-        super(...bits as BitFieldResolvable[]);
+    public constructor(...bits: PermissionsResolvable[]) {
+        super(...bits);
 
         if (this.has('Administrator')) {
             this.bitField = Permissions.bits.Administrator;

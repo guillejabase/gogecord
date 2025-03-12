@@ -6,7 +6,7 @@ import GuildTextBasedChannel from './GuildTextBasedChannel';
 export default class GuildTextChannel extends GuildTextBasedChannel {
     public readonly type = 'GuildText';
 
-    constructor(guild: Guild, data: APITextChannel) {
+    public constructor(guild: Guild, data: APITextChannel) {
         super(guild, data);
     }
 }

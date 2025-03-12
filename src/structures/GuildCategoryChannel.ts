@@ -6,7 +6,7 @@ import GuildBasedChannel from './GuildBasedChannel';
 export default class GuildCategoryChanel extends GuildBasedChannel {
     public readonly type = 'GuildCategory';
 
-    constructor(guild: Guild, data: APIGuildCategoryChannel) {
+    public constructor(guild: Guild, data: APIGuildCategoryChannel) {
         super(guild, data);
     }
 }

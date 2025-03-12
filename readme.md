@@ -11,7 +11,7 @@ A lightweight library for interacting with the [Discord API](https://discord.com
 npm install gogecord
 ```
 
-## Usage
+# Usage
 ```js
 const { Client } = require('gogecord');
 

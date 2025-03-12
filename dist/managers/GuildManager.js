@@ -15,7 +15,7 @@ class GuildManager {
     }
     async fetch(guildId) {
         return new Guild_1.default(this.client, await this.client.request({
-            method: 'get',
+            method: 'GET',
             path: v10_1.Routes.guild(guildId)
         }));
     }

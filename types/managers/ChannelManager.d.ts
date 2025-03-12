@@ -1,5 +1,5 @@
+import type { Channel } from '../structures/BasedChannel';
 import Client from '../structures/Client';
-import Channel from '../structures/Channel';
 import Collection from '../util/Collection';
 export default class ChannelManager {
     private client;

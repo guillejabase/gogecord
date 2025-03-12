@@ -1,4 +1,4 @@
-import BitField, { type BitFieldResolvable } from './BitField';
+import BitField from './BitField';
 
 export type ChannelFlag = keyof typeof ChannelFlags.bits;
 export type ChannelFlagsResolvable = ChannelFlag | number | bigint | ChannelFlagsResolvable[];
@@ -16,8 +16,8 @@ export default class ChannelFlags extends BitField {
         HideMediaDownloadOptions: 32768
     } as const;
 
-    constructor(...bits: ChannelFlagsResolvable[]) {
-        super(...bits as BitFieldResolvable[]);
+    public constructor(...bits: ChannelFlagsResolvable[]) {
+        super(...bits);
     }
 
     public has(bit: ChannelFlagsResolvable): boolean {
