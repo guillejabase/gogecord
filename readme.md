@@ -53,4 +53,6 @@ client.on('MESSAGE_CREATE', (message) => {
         });
     }
 });
+
+client.login('app_token');
 ```

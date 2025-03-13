@@ -21,7 +21,7 @@ client.on('READY', (client) => {
         status: 'DoNotDisturb'
     });
 
-    console.log(client);
+    console.log('Logged in as', client.user.username);
 });
 
 process.loadEnvFile();
