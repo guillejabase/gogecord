@@ -39,14 +39,17 @@ client.on('READY', (client) => {
     console.log('Logged in as', client.user.username);
 });
 client.on('MESSAGE_CREATE', (message) => {
-    if (message.content == 'hi') {
-        message.reply({
-            content: 'hi!'
-        });
+    const content = message.content.toLowerCase();
+    let response;
+
+    if (content === 'hi') {
+        response = 'hi!';
+    } else if (content === 'bye') {
+        response = 'bye!';
     }
-    if (message.content == 'bye') {
+    if (response) {
         message.reply({
-            content: 'bye!'
+            content: response
         });
     }
 });
