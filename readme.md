@@ -1,4 +1,4 @@
-# Gogecord
+# gogecord
 A lightweight library for interacting with the [Discord API](https://discord.com/developers/docs/intro). Written in TypeScript and compiled to JavaScript, this library provides developers with the necessary tools to create powerful Discord bots quickly and easily.
 
 ## Features
