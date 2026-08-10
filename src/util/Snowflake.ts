@@ -4,6 +4,6 @@ export class Snowflake {
   public readonly timestamp: number;
 
   public constructor(id: string) {
-    this.timestamp = Number((BigInt(id) >> 2n) + epoch);
+    this.timestamp = Number((BigInt(id) >> 22n) + epoch);
   }
 }

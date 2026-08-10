@@ -19,5 +19,8 @@ client.on('READY', (c) => {
     status: 'online'
   });
 });
+client.on('GUILD_CREATE', (g) => {
+  console.log(g.channels);
+});
 
 client.login(token);

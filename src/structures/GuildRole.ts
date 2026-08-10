@@ -15,10 +15,10 @@ export interface GuildRoleColors {
 
 export class GuildRole {
   public colors: GuildRoleColors;
-  public createdAt: number;
+  public createdTimestamp: number;
   public flags: GuildRoleFlags;
   public hoist: boolean;
-  public icon?: string | null | undefined;
+  public icon: string | null;
   public id: string;
   public managed: boolean;
   public mentionable: boolean;
@@ -32,10 +32,10 @@ export class GuildRole {
       secondary: data.colors.secondary_color,
       tertiary: data.colors.tertiary_color
     };
-    this.createdAt = new Snowflake(data.id).timestamp;
+    this.createdTimestamp = new Snowflake(data.id).timestamp;
     this.flags = new GuildRoleFlags(data.flags);
     this.hoist = data.hoist;
-    this.icon = data.icon;
+    this.icon = data.icon ?? null;
     this.id = data.id;
     this.managed = data.managed;
     this.mentionable = data.mentionable;

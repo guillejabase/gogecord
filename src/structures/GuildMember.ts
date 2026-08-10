@@ -12,29 +12,30 @@ import { Permissions } from '../util/Permissions';
 export class GuildMember {
   private userId: string;
 
-  public avatar?: string | null | undefined;
-  public communicationDisabledUntil?: string | null | undefined;
-  public deaf?: boolean | undefined;
+  public avatar: string | null;
+  public deaf: boolean;
   public flags: GuildMemberFlags;
-  public joinedAt: string | null;
-  public mute?: boolean | undefined;
-  public nick?: string | null | undefined;
-  public pending?: boolean | undefined;
-  public premiumSince?: string | null | undefined;
+  public joined: number | null;
+  public mute: boolean;
+  public nick: string | null;
+  public pending: boolean;
+  public premiumSince: number | null;
+  public timedOutUntil: number | null;
 
   public roles = new Map<string, GuildRole>();
 
   public constructor(public client: Client<true>, private guildId: string, data: APIGuildMember | GatewayGuildMemberAddDispatchData | GatewayGuildMemberUpdateDispatchData) {
-    this.avatar = data.avatar;
-    this.communicationDisabledUntil = data.communication_disabled_until;
-    this.deaf = data.deaf;
-    this.flags = new GuildMemberFlags(data.flags);
-    this.joinedAt = data.joined_at;
-    this.mute = data.mute;
-    this.nick = data.nick;
-    this.pending = data.pending;
-    this.premiumSince = data.premium_since;
     this.userId = data.user.id;
+
+    this.avatar = data.avatar ?? null;
+    this.deaf = data.deaf ?? false;
+    this.flags = new GuildMemberFlags(data.flags);
+    this.joined = data.joined_at ? Date.parse(data.joined_at) : null;
+    this.mute = data.mute ?? false;
+    this.nick = data.nick ?? null;
+    this.pending = data.pending ?? false;
+    this.premiumSince = data.premium_since ? Date.parse(data.premium_since) : null;
+    this.timedOutUntil = data.communication_disabled_until ? Date.parse(data.communication_disabled_until) : null;
 
     if (!this.client.users.has(this.userId)) {
       new User(this.client, data.user);

@@ -1,4 +1,7 @@
 import type {
+  GatewayChannelCreateDispatchData,
+  GatewayChannelDeleteDispatchData,
+  GatewayChannelUpdateDispatchData,
   GatewayGuildCreateDispatchData,
   GatewayGuildDeleteDispatchData,
   GatewayGuildMemberAddDispatchData,
@@ -15,6 +18,9 @@ import type {
 import { type Client } from './Client';
 
 export type Dispatches = {
+  CHANNEL_CREATE: GatewayChannelCreateDispatchData;
+  CHANNEL_DELETE: GatewayChannelDeleteDispatchData;
+  CHANNEL_UPDATE: GatewayChannelUpdateDispatchData;
   GUILD_CREATE: GatewayGuildCreateDispatchData;
   GUILD_DELETE: GatewayGuildDeleteDispatchData;
   GUILD_MEMBER_ADD: GatewayGuildMemberAddDispatchData;

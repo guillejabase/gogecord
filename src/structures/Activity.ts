@@ -5,37 +5,44 @@ import { ActivityFlags } from '../util/ActivityFlags';
 export type ActivityType = keyof typeof Type;
 
 export interface ActivityEmoji {
-  animated?: boolean;
-  id?: string | null;
+  animated: boolean;
+  id: string | null;
   name: string | null;
 }
 export interface ActivityTimestamps {
-  end?: number | undefined;
-  start?: number | undefined;
+  end: number | null;
+  start: number | null;
 }
 
 export class Activity {
-  public createdAt: number;
-  public details?: string | null | undefined;
-  public emoji?: ActivityEmoji | undefined;
+  public createdTimestamp: number;
+  public details: string | null;
+  public emoji: ActivityEmoji | null;
   public flags: ActivityFlags;
   public id: string;
   public name: string;
-  public state?: string | null | undefined;
-  public timestamps?: ActivityTimestamps | undefined;
+  public state: string | null;
+  public timestamps: ActivityTimestamps | null;
   public type: ActivityType;
-  public url?: string | null | undefined;
+  public url: string | null;
 
   public constructor(data: GatewayActivity) {
-    this.createdAt = data.created_at;
-    this.details = data.details;
-    this.emoji = data.emoji;
+    this.createdTimestamp = data.created_at;
+    this.details = data.details ?? null;
+    this.emoji = data.emoji ? {
+      animated: data.emoji.animated ?? false,
+      id: data.emoji.id ?? null,
+      name: data.emoji.name
+    } : null;
     this.flags = new ActivityFlags(data.flags);
     this.id = data.id;
     this.name = data.name;
-    this.state = data.state;
-    this.timestamps = data.timestamps;
+    this.state = data.state ?? null;
+    this.timestamps = data.timestamps ? {
+      end: data.timestamps.end ?? null,
+      start: data.timestamps.start ?? null
+    } : null;
     this.type = Type[data.type] as ActivityType;
-    this.url = data.url;
+    this.url = data.url ?? null;
   }
 }

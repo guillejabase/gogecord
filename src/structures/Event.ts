@@ -4,7 +4,12 @@ import { type GuildMember } from './GuildMember';
 import { type GuildRole } from './GuildRole';
 import { type Presence } from './Presence';
 
+import { type GuildChannel } from '../util/ChannelFactory';
+
 export type Events = {
+  CHANNEL_CREATE: [channel: GuildChannel];
+  CHANNEL_DELETE: [channel: GuildChannel];
+  CHANNEL_UPDATE: [old: GuildChannel, updated: GuildChannel];
   GUILD_CREATE: [guild: Guild];
   GUILD_DELETE: [guild: Guild];
   GUILD_MEMBER_ADD: [member: GuildMember];

@@ -6,7 +6,7 @@ export default new Dispatch({
 
   run(c, d) {
     c.user = new User(c, d.user);
-    c.readyAt = Date.now();
+    c.readyTimestamp = Date.now();
 
     c.emit(this.name, c);
   }

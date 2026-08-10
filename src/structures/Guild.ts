@@ -4,6 +4,7 @@ import { type Client } from './Client';
 import { GuildMember } from './GuildMember';
 import { GuildRole } from './GuildRole';
 
+import { ChannelFactory, type GuildChannel } from '../util/ChannelFactory';
 import { GuildSystemChannelFlags } from '../util/GuildSystemChannelFlags';
 import { Snowflake } from '../util/Snowflake';
 
@@ -15,11 +16,13 @@ export type NSFWLevel = keyof typeof GuildNSFWLevel;
 export type PremiumTier = keyof typeof GuildPremiumTier;
 export type VerificationLevel = keyof typeof GuildVerificationLevel;
 
+const Features = Object.fromEntries(Object.entries(GuildFeature).map(([k, v]) => [v, k])) as Record<string, Feature>;
+
 export class Guild {
   private ownerId: string;
 
   public banner: string | null;
-  public createdAt: number;
+  public createdTimestamp: number;
   public description: string | null;
   public explicitContentFilter: ExplicitContentFilter;
   public features: Feature[];
@@ -34,6 +37,7 @@ export class Guild {
   public systemChannelFlags: GuildSystemChannelFlags;
   public verificationLevel: VerificationLevel;
 
+  public channels: Map<string, GuildChannel>;
   public members: Map<string, GuildMember>;
   public roles: Map<string, GuildRole>;
 
@@ -41,10 +45,13 @@ export class Guild {
     this.ownerId = data.owner_id;
 
     this.banner = data.banner;
-    this.createdAt = new Snowflake(data.id).timestamp;
+    this.createdTimestamp = new Snowflake(data.id).timestamp;
     this.description = data.description;
     this.explicitContentFilter = GuildExplicitContentFilter[data.explicit_content_filter] as ExplicitContentFilter;
-    this.features = data.features.map((f) => GuildFeature[f] as Feature);
+    this.features = data.features.flatMap((f) => {
+      const feature = Features[f];
+      return feature ? [feature] : [];
+    });
     this.hubType = data.hub_type ? GuildHubType[data.hub_type] as HubType : null;
     this.icon = data.icon;
     this.id = data.id;
@@ -56,11 +63,18 @@ export class Guild {
     this.systemChannelFlags = new GuildSystemChannelFlags(data.system_channel_flags);
     this.verificationLevel = GuildVerificationLevel[data.verification_level] as VerificationLevel;
 
+    this.channels = client.guilds.get(this.id)?.channels ?? new Map<string, GuildChannel>();
     this.members = client.guilds.get(this.id)?.members ?? new Map<string, GuildMember>();
     this.roles = client.guilds.get(this.id)?.roles ?? new Map<string, GuildRole>();
 
     this.client.guilds.set(this.id, this);
 
+    if ('channels' in data) {
+      data.channels.forEach((c) => {
+        const channel = ChannelFactory.create(client, this.id, c);
+        this.channels.set(channel.id, channel);
+      });
+    }
     if ('members' in data) {
       data.members.forEach((m) => {
         this.members.set(m.user.id, new GuildMember(client, this.id, m));

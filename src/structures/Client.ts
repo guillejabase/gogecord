@@ -22,7 +22,7 @@ export class Client<R extends boolean = boolean> extends Emitter {
 
   public gateway: Gateway;
   public intents: Intents;
-  public readyAt: R extends true ? number : number | null = null as any;
+  public readyTimestamp: R extends true ? number : number | null = null as any;
   public token: R extends true ? string : string | null = null as any;
   public user: R extends true ? User : User | null = null as any;
 
