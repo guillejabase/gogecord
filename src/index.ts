@@ -1,5 +1,7 @@
 export { Activity, type ActivityType, type ActivityEmoji, type ActivityTimestamps } from './structures/Activity';
+export { BaseGuildChannel, type GuildChannelType } from './structures/BaseGuildChannel';
 export { Client, type ClientOptions, type RequestOptions } from './structures/Client';
+export { Command, type CommandData, type CommandOptions } from './structures/Command';
 export { Dispatch, type Dispatches, type DispatchOptions } from './structures/Dispatch';
 export { Emitter, type Listener } from './structures/Emitter';
 export { Event, type Events, type EventOptions } from './structures/Event';
@@ -7,15 +9,18 @@ export { Gateway, type PresenceOptions } from './structures/Gateway';
 export { Guild, type ExplicitContentFilter, type Feature, type HubType, type MFALevel, type NSFWLevel, type PremiumTier, type VerificationLevel } from './structures/Guild';
 export { GuildMember } from './structures/GuildMember';
 export { GuildRole, type GuildRoleColors } from './structures/GuildRole';
+export { Interaction, type ReplyOptions } from './structures/Interaction';
 export { Presence, type PresenceStatus, type ClientStatus } from './structures/Presence';
 export { User, type PremiumType } from './structures/User';
 
 export { ActivityFlags, type ActivityFlagsString, type ActivityFlagsResolvable } from './util/ActivityFlags';
 export { BitField, type BitFieldResolvable } from './util/BitField';
+export { ChannelFactory, type GuildChannel } from './util/ChannelFactory';
 export { GuildMemberFlags, type GuildMemberFlagsString, type GuildMemberFlagsResolvable } from './util/GuildMemberFlags';
 export { GuildRoleFlags, type GuildRoleFlagsString, type GuildRoleFlagsResolvable } from './util/GuildRoleFlags';
 export { GuildSystemChannelFlags, type GuildSystemChannelFlagsString, type GuildSystemChannelFlagsResolvable } from './util/GuildSystemChannelFlags';
 export { Intents, type IntentsString, type IntentsResolvable } from './util/Intents';
+export { InteractionFactory } from './util/InteractionFactory';
 export { Permissions, type PermissionsString, type PermissionsResolvable } from './util/Permissions';
 export { Snowflake } from './util/Snowflake';
 export { UserFlags, type UserFlagsString, type UserFlagsResolvable } from './util/UserFlags';

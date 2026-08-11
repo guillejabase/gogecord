@@ -11,6 +11,7 @@ import type {
   GatewayGuildRoleDeleteDispatchData,
   GatewayGuildRoleUpdateDispatchData,
   GatewayGuildUpdateDispatchData,
+  GatewayInteractionCreateDispatchData,
   GatewayPresenceUpdateDispatchData,
   GatewayReadyDispatchData
 } from 'discord-api-types/v10';
@@ -30,6 +31,7 @@ export type Dispatches = {
   GUILD_ROLE_DELETE: GatewayGuildRoleDeleteDispatchData;
   GUILD_ROLE_UPDATE: GatewayGuildRoleUpdateDispatchData;
   GUILD_UPDATE: GatewayGuildUpdateDispatchData;
+  INTERACTION_CREATE: GatewayInteractionCreateDispatchData;
   PRESENCE_UPDATE: GatewayPresenceUpdateDispatchData;
   READY: GatewayReadyDispatchData;
 };

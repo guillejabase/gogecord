@@ -1,5 +1,6 @@
-import { RouteBases } from 'discord-api-types/v10';
+import { RouteBases, Routes } from 'discord-api-types/v10';
 
+import { Command } from './Command';
 import { Emitter } from './Emitter';
 import { Gateway } from './Gateway';
 import { type Guild } from './Guild';
@@ -26,6 +27,7 @@ export class Client<R extends boolean = boolean> extends Emitter {
   public token: R extends true ? string : string | null = null as any;
   public user: R extends true ? User : User | null = null as any;
 
+  public commands = new Map<string, Command>();
   public guilds = new Map<string, Guild>();
   public presences = new Map<string, Presence>();
   public users = new Map<string, User>();
@@ -79,6 +81,26 @@ export class Client<R extends boolean = boolean> extends Emitter {
     return (await response.json()) as T;
   }
 
+  public destroy(): void {
+    this.gateway.disconnect();
+  }
+  public async login(token: string): Promise<void> {
+    this.token = token;
+    return await this.gateway.connect();
+  }
+  public async registerCommands(): Promise<void> {
+    if (!this.user) {
+      throw new Error('Cannot register commands before the client is ready.');
+    }
+
+    const body = Array.from(this.commands.values()).map((cmd) => cmd.data);
+
+    await this.request({
+      method: 'PUT',
+      endpoint: Routes.applicationCommands(this.user.id),
+      body
+    });
+  }
   public async request<T>(options: RequestOptions): Promise<T> {
     if (!this.token) {
       throw new Error(`Cannot make requests without a token`);
@@ -103,12 +125,5 @@ export class Client<R extends boolean = boolean> extends Emitter {
 
     await next;
     return result;
-  }
-  public async login(token: string): Promise<void> {
-    this.token = token;
-    return await this.gateway.connect();
-  }
-  public destroy(): void {
-    this.gateway.disconnect();
   }
 }

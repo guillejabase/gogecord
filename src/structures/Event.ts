@@ -2,6 +2,7 @@ import { type Client } from './Client';
 import { type Guild } from './Guild';
 import { type GuildMember } from './GuildMember';
 import { type GuildRole } from './GuildRole';
+import { type Interaction } from './Interaction';
 import { type Presence } from './Presence';
 
 import { type GuildChannel } from '../util/ChannelFactory';
@@ -19,6 +20,7 @@ export type Events = {
   GUILD_ROLE_DELETE: [role: GuildRole];
   GUILD_ROLE_UPDATE: [old: GuildRole, updated: GuildRole];
   GUILD_UPDATE: [old: Guild, updated: Guild];
+  INTERACTION_CREATE: [interaction: Interaction];
   PRESENCE_UPDATE: [old: Presence, updated: Presence];
   READY: [client: Client<true>];
 };
