@@ -34,9 +34,7 @@ export class Event<K extends keyof Events = keyof Events> {
   public run: EventOptions<K>['run'];
 
   public constructor(options: EventOptions<K>) {
-    const { name, run } = options;
-
-    this.name = name;
-    this.run = run;
+    this.name = options.name;
+    this.run = options.run;
   }
 }

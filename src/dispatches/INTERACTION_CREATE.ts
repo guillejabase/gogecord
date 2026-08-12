@@ -9,6 +9,8 @@ export default new Dispatch({
 
     if (!interaction) return;
 
+    c.emit(this.name, interaction);
+
     const command = c.commands.get(interaction.commandName);
 
     if (!command) return;

@@ -1,7 +1,10 @@
+import { Glob } from 'bun';
 import { RouteBases, Routes } from 'discord-api-types/v10';
+import { join } from 'node:path';
 
-import { Command } from './Command';
+import { type Command } from './Command';
 import { Emitter } from './Emitter';
+import { type Event } from './Event';
 import { Gateway } from './Gateway';
 import { type Guild } from './Guild';
 import { type Presence } from './Presence';
@@ -28,6 +31,7 @@ export class Client<R extends boolean = boolean> extends Emitter {
   public user: R extends true ? User : User | null = null as any;
 
   public commands = new Map<string, Command>();
+  public events = new Map<string, Event>();
   public guilds = new Map<string, Guild>();
   public presences = new Map<string, Presence>();
   public users = new Map<string, User>();
@@ -84,6 +88,32 @@ export class Client<R extends boolean = boolean> extends Emitter {
   public destroy(): void {
     this.gateway.disconnect();
   }
+  public async loadCommands(path: string): Promise<void> {
+    const glob = new Glob('**/*.{ts,js}');
+
+    for await (const file of glob.scan(path)) {
+      const module = await import(join(path, file));
+      const command = module.default ?? module;
+
+      if (command && 'data' in command) {
+        this.commands.set(command.data.name, command);
+      }
+    }
+  }
+  public async loadEvents(path: string): Promise<void> {
+    const glob = new Glob('**/*.{ts,js}');
+
+    for await (const file of glob.scan(path)) {
+      const module = await import(join(path, file));
+      const event = module.default ?? module;
+
+      if (event && 'name' in event) {
+        this.events.set(event.name, event);
+      }
+    }
+
+    this.registerEvents();
+  }
   public async login(token: string): Promise<void> {
     this.token = token;
     return await this.gateway.connect();
@@ -93,13 +123,18 @@ export class Client<R extends boolean = boolean> extends Emitter {
       throw new Error('Cannot register commands before the client is ready.');
     }
 
-    const body = Array.from(this.commands.values()).map((cmd) => cmd.data);
-
     await this.request({
       method: 'PUT',
       endpoint: Routes.applicationCommands(this.user.id),
-      body
+      body: Array.from(this.commands.values()).map((c) => c.data)
     });
+  }
+  public registerEvents(): void {
+    for (const event of this.events.values()) {
+      this.on(event.name, (...args: any[]) => {
+        event.run(...(args as any));
+      });
+    }
   }
   public async request<T>(options: RequestOptions): Promise<T> {
     if (!this.token) {
@@ -107,11 +142,10 @@ export class Client<R extends boolean = boolean> extends Emitter {
     }
 
     const route = `${options.method}:${options.endpoint.replace(/\d{17,19}/g, ':id')}`;
-    const current = this.queues.get(route) ?? Promise.resolve();
 
     let result!: T;
 
-    const next = current.then(async () => {
+    const next = (this.queues.get(route) ?? Promise.resolve()).then(async () => {
       result = await this.process<T>(options);
     });
 

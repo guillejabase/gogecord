@@ -45,9 +45,7 @@ export class Dispatch<K extends keyof Dispatches = keyof Dispatches> {
   public run: DispatchOptions<K>['run'];
 
   public constructor(options: DispatchOptions<K>) {
-    const { name, run } = options;
-
-    this.name = name;
-    this.run = run;
+    this.name = options.name;
+    this.run = options.run;
   }
 }

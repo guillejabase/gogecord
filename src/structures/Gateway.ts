@@ -105,7 +105,7 @@ export class Gateway {
 
             if (dispatch === undefined) {
               try {
-                dispatch = (await import(`../events/${t}`)).default as Dispatch;
+                dispatch = (await import(`../dispatches/${t}`)).default as Dispatch;
                 this.dispatches.set(t, dispatch);
               } catch {
                 this.dispatches.set(t, null);

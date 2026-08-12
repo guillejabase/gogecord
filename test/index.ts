@@ -1,4 +1,5 @@
-import { Client, Command } from '..';
+import { Client } from '..';
+import { join } from 'node:path';
 
 const token = Bun.env['APP_TOKEN'];
 
@@ -7,37 +8,10 @@ if (!token) {
 }
 
 const client = new Client({
-  intents: ['GuildMembers', 'GuildPresences', 'Guilds'],
-});
-const ping = new Command({
-  data: {
-    name: 'ping',
-    description: 'Replies with pong and latency info',
-  },
-
-  async run(i) {
-    await i.reply({ content: 'pong' });
-  }
+  intents: ['GuildMembers', 'GuildPresences', 'Guilds']
 });
 
-client.commands.set(ping.data.name, ping);
-
-client.on('READY', async (c) => {
-  console.log(`Logged in as ${c.user.username}#${c.user.discriminator}`);
-
-  c.gateway.setPresence({
-    activities: [{
-      name: 'Gogecord',
-      type: 'Playing'
-    }],
-    status: 'online'
-  });
-
-  try {
-    await c.registerCommands();
-  } catch (error) {
-    console.error('Failed to register commands:', error);
-  }
-});
+await client.loadCommands(join(__dirname, 'commands'));
+await client.loadEvents(join(__dirname, 'events'));
 
 client.login(token);
