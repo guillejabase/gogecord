@@ -1,5 +1,6 @@
 import { type Client } from './Client';
 import { type Guild } from './Guild';
+import { type GuildBan } from './GuildBan';
 import { type GuildMember } from './GuildMember';
 import { type GuildRole } from './GuildRole';
 import { type Interaction } from './Interaction';
@@ -11,6 +12,8 @@ export type Events = {
   CHANNEL_CREATE: [channel: GuildChannel];
   CHANNEL_DELETE: [channel: GuildChannel];
   CHANNEL_UPDATE: [old: GuildChannel, updated: GuildChannel];
+  GUILD_BAN_ADD: [ban: GuildBan];
+  GUILD_BAN_REMOVE: [ban: GuildBan];
   GUILD_CREATE: [guild: Guild];
   GUILD_DELETE: [guild: Guild];
   GUILD_MEMBER_ADD: [member: GuildMember];

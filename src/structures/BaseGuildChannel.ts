@@ -20,6 +20,8 @@ export abstract class BaseGuildChannel {
     this.id = data.id;
     this.name = data.name;
     this.type = ChannelType[data.type] as GuildChannelType;
+
+    this.guild.channels.set(this.id, this);
   }
 
   public get guild(): Guild {

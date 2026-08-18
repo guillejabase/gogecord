@@ -10,6 +10,7 @@ import { type Guild } from './Guild';
 import { type Presence } from './Presence';
 import { type User } from './User';
 
+import { Collection } from '../util/Collection';
 import { Intents, type IntentsResolvable } from '../util/Intents';
 
 export interface ClientOptions {
@@ -19,10 +20,11 @@ export interface RequestOptions {
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   endpoint: string;
   body?: unknown;
+  reason?: string | undefined;
 }
 
 export class Client<R extends boolean = boolean> extends Emitter {
-  private queues = new Map<string, Promise<void>>();
+  private queues = new Collection<string, Promise<void>>();
 
   public gateway: Gateway;
   public intents: Intents;
@@ -30,11 +32,11 @@ export class Client<R extends boolean = boolean> extends Emitter {
   public token: R extends true ? string : string | null = null as any;
   public user: R extends true ? User : User | null = null as any;
 
-  public commands = new Map<string, Command>();
-  public events = new Map<string, Event>();
-  public guilds = new Map<string, Guild>();
-  public presences = new Map<string, Presence>();
-  public users = new Map<string, User>();
+  public commands = new Collection<string, Command>();
+  public events = new Collection<string, Event>();
+  public guilds = new Collection<string, Guild>();
+  public presences = new Collection<string, Presence>();
+  public users = new Collection<string, User>();
 
   public constructor(options: ClientOptions) {
     super();
@@ -44,12 +46,18 @@ export class Client<R extends boolean = boolean> extends Emitter {
   }
 
   private async process<T>(options: RequestOptions, retries = 0): Promise<T> {
+    const headers: Record<string, string> = {
+      Authorization: `Bot ${this.token}`,
+      'Content-Type': 'application/json'
+    };
+
+    if (options.reason) {
+      headers['X-Audit-Log-Reason'] = encodeURIComponent(options.reason);
+    }
+
     const response = await fetch(`${RouteBases.api}${options.endpoint}`, {
       method: options.method,
-      headers: {
-        Authorization: `Bot ${this.token}`,
-        'Content-Type': 'application/json'
-      },
+      headers,
       body: options.body ? JSON.stringify(options.body) : undefined
     });
 

@@ -2,6 +2,8 @@ import type {
   GatewayChannelCreateDispatchData,
   GatewayChannelDeleteDispatchData,
   GatewayChannelUpdateDispatchData,
+  GatewayGuildBanAddDispatchData,
+  GatewayGuildBanRemoveDispatchData,
   GatewayGuildCreateDispatchData,
   GatewayGuildDeleteDispatchData,
   GatewayGuildMemberAddDispatchData,
@@ -22,6 +24,8 @@ export type Dispatches = {
   CHANNEL_CREATE: GatewayChannelCreateDispatchData;
   CHANNEL_DELETE: GatewayChannelDeleteDispatchData;
   CHANNEL_UPDATE: GatewayChannelUpdateDispatchData;
+  GUILD_BAN_ADD: GatewayGuildBanAddDispatchData;
+  GUILD_BAN_REMOVE: GatewayGuildBanRemoveDispatchData;
   GUILD_CREATE: GatewayGuildCreateDispatchData;
   GUILD_DELETE: GatewayGuildDeleteDispatchData;
   GUILD_MEMBER_ADD: GatewayGuildMemberAddDispatchData;

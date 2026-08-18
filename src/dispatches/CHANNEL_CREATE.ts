@@ -12,10 +12,6 @@ export default new Dispatch({
 
     if (!guild) return;
 
-    const channel = ChannelFactory.create(c, guild.id, d as any);
-
-    guild.channels.set(channel.id, channel);
-
-    c.emit(this.name, channel);
+    c.emit(this.name, ChannelFactory.create(c, guild.id, d));
   }
 });

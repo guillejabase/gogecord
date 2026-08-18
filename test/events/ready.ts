@@ -1,4 +1,4 @@
-import { Event } from '../..';
+import { Event } from '../../src/index';
 
 export default new Event({
   name: 'READY',

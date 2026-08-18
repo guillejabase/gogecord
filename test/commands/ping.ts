@@ -1,4 +1,4 @@
-import { Command } from '../..';
+import { Command } from '../../src/index';
 
 export default new Command({
   data: {
@@ -7,6 +7,6 @@ export default new Command({
   },
 
   run(i) {
-    i.reply({ content: 'pong' });
+    i.reply({ content: `Pong! ${i.client.gateway.ping}ms` });
   }
 });

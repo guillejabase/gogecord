@@ -15,16 +15,12 @@ export default new Dispatch({
     const channel = guild.channels.get(d.id);
 
     if (!channel) {
-      const created = ChannelFactory.create(c, guild.id, d as any);
-
-      guild.channels.set(created.id, created);
+      ChannelFactory.create(c, guild.id, d);
       return;
     }
 
     const old = Object.assign(Object.create(Object.getPrototypeOf(channel)), channel);
-    const updated = ChannelFactory.create(c, guild.id, d as any);
-
-    guild.channels.set(updated.id, updated);
+    const updated = ChannelFactory.create(c, guild.id, d);
 
     c.emit(this.name, old, updated);
   }

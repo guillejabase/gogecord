@@ -28,9 +28,11 @@ const ActivityTypeValues: Record<ActivityType, Type> = {
 export class Gateway {
   private dispatches = new Map<string, Dispatch | null>();
   private heartbeatInterval: Timer | null = null;
+  private lastHeartbeatSent: number = 0;
   private sequence: number | null = null;
   private ws: WebSocket | null = null;
 
+  public ping: number = -1;
   public presence: PresenceOptions = {
     activities: [],
     afk: false,
@@ -53,6 +55,8 @@ export class Gateway {
     }
   }
   private sendHeartbeat(): void {
+    this.lastHeartbeatSent = Date.now();
+
     this.send({
       op: GatewayOpcodes.Heartbeat,
       d: this.sequence
@@ -98,6 +102,11 @@ export class Gateway {
               },
             },
           });
+          break;
+        case GatewayOpcodes.HeartbeatAck:
+          if (this.lastHeartbeatSent > 0) {
+            this.ping = Date.now() - this.lastHeartbeatSent;
+          }
           break;
         case GatewayOpcodes.Dispatch:
           if (t) {

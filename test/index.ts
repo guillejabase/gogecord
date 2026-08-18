@@ -1,4 +1,4 @@
-import { Client } from '..';
+import { Client } from '../src/index';
 import { join } from 'node:path';
 
 const token = Bun.env['APP_TOKEN'];

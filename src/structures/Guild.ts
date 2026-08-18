@@ -1,10 +1,12 @@
-import { GuildExplicitContentFilter, GuildFeature, GuildHubType, GuildMFALevel, GuildNSFWLevel, GuildPremiumTier, GuildVerificationLevel, type GatewayGuildCreateDispatchData, type GatewayGuildUpdateDispatchData } from 'discord-api-types/v10';
+import { GuildExplicitContentFilter, GuildFeature, GuildHubType, GuildMFALevel, GuildNSFWLevel, GuildPremiumTier, GuildVerificationLevel, Routes, type GatewayGuildCreateDispatchData, type GatewayGuildUpdateDispatchData } from 'discord-api-types/v10';
 
 import { type Client } from './Client';
+import { GuildBan } from './GuildBan';
 import { GuildMember } from './GuildMember';
 import { GuildRole } from './GuildRole';
 
 import { ChannelFactory, type GuildChannel } from '../util/ChannelFactory';
+import { Collection } from '../util/Collection';
 import { GuildSystemChannelFlags } from '../util/GuildSystemChannelFlags';
 import { Snowflake } from '../util/Snowflake';
 
@@ -15,6 +17,11 @@ export type MFALevel = keyof typeof GuildMFALevel;
 export type NSFWLevel = keyof typeof GuildNSFWLevel;
 export type PremiumTier = keyof typeof GuildPremiumTier;
 export type VerificationLevel = keyof typeof GuildVerificationLevel;
+
+export interface GuildBanOptions {
+  deleteMessageSeconds?: number;
+  reason?: string;
+}
 
 const Features = Object.fromEntries(Object.entries(GuildFeature).map(([k, v]) => [v, k])) as Record<string, Feature>;
 
@@ -37,9 +44,10 @@ export class Guild {
   public systemChannelFlags: GuildSystemChannelFlags;
   public verificationLevel: VerificationLevel;
 
-  public channels: Map<string, GuildChannel>;
-  public members: Map<string, GuildMember>;
-  public roles: Map<string, GuildRole>;
+  public bans: Collection<string, GuildBan>;
+  public channels: Collection<string, GuildChannel>;
+  public members: Collection<string, GuildMember>;
+  public roles: Collection<string, GuildRole>;
 
   public constructor(public client: Client<true>, data: GatewayGuildCreateDispatchData | GatewayGuildUpdateDispatchData) {
     this.ownerId = data.owner_id;
@@ -63,9 +71,10 @@ export class Guild {
     this.systemChannelFlags = new GuildSystemChannelFlags(data.system_channel_flags);
     this.verificationLevel = GuildVerificationLevel[data.verification_level] as VerificationLevel;
 
-    this.channels = client.guilds.get(this.id)?.channels ?? new Map<string, GuildChannel>();
-    this.members = client.guilds.get(this.id)?.members ?? new Map<string, GuildMember>();
-    this.roles = client.guilds.get(this.id)?.roles ?? new Map<string, GuildRole>();
+    this.bans = client.guilds.get(this.id)?.bans ?? new Collection<string, GuildBan>();
+    this.channels = client.guilds.get(this.id)?.channels ?? new Collection<string, GuildChannel>();
+    this.members = client.guilds.get(this.id)?.members ?? new Collection<string, GuildMember>();
+    this.roles = client.guilds.get(this.id)?.roles ?? new Collection<string, GuildRole>();
 
     this.client.guilds.set(this.id, this);
 
@@ -94,5 +103,40 @@ export class Guild {
     }
 
     return owner;
+  }
+
+  public async ban(userId: string, options?: GuildBanOptions): Promise<void> {
+    await this.client.request({
+      method: 'PUT',
+      endpoint: Routes.guildBan(this.id, userId),
+      body: {
+        delete_message_seconds: options?.deleteMessageSeconds
+      },
+      reason: options?.reason
+    });
+  }
+  public async kick(userId: string, reason?: string): Promise<void> {
+    await this.client.request({
+      method: 'DELETE',
+      endpoint: Routes.guildMember(this.id, userId),
+      reason
+    });
+  }
+  public async timeout(userId: string, duration?: number | null, reason?: string): Promise<void> {
+    await this.client.request({
+      method: 'PATCH',
+      endpoint: Routes.guildMember(this.id, userId),
+      body: {
+        communication_disabled_until: duration ? new Date(Date.now() + duration).toISOString() : null
+      },
+      reason
+    });
+  }
+  public async unban(userId: string, reason?: string): Promise<void> {
+    await this.client.request({
+      method: 'DELETE',
+      endpoint: Routes.guildBan(this.id, userId),
+      reason
+    });
   }
 }

@@ -58,7 +58,7 @@ export default new Command({
   },
 
   run(i) {
-    i.reply({ content: 'pong' });
+    i.reply({ content: `pong! ${i.client.}` });
   }
 });
 ```
