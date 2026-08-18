@@ -1,6 +1,6 @@
 {
   "name": "gogecord",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Cliente de Discord simple, ultra ligero, rápido y sin dependencias externas. Diseñado específicamente para Bun y enfocado en slash commands.",
   "type": "module",
   "main": "./src/index.ts",

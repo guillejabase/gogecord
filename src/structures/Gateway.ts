@@ -81,6 +81,7 @@ export class Gateway {
       switch (op) {
         case GatewayOpcodes.Hello:
           this.stopHeartbeat();
+          this.sendHeartbeat();
 
           this.heartbeatInterval = setInterval(() => {
             this.sendHeartbeat();
