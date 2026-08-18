@@ -1,7 +1,7 @@
 # Gogecord
 
-Cliente de Discord simple, ultra ligero, rápido y sin dependencias externas.<br>
-Diseñado específicamente para **Bun** y enfocado en **slash commands**.
+Librería de Discord simple, ultra ligera y rápida sin dependencias externas.<br>
+Diseñada específicamente para **Bun** y enfocada en **slash commands**.
 
 ## 1. Filosofía de diseño
 
